@@ -782,7 +782,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         ]]
                         await client.send_message(
                             chat_id=query.from_user.id,
-                            text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 24 hours from now!</b>",
+                            text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
                             protect_content=True if ident == 'checksubp' else False,
                             disable_web_page_preview=True,
                             parse_mode=enums.ParseMode.HTML,
@@ -883,7 +883,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             ]]
             await client.send_message(
                 chat_id=query.from_user.id,
-                text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 12 hours from now!</b>",
+                text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
                 protect_content=True if ident == 'checksubp' else False,
                 disable_web_page_preview=True,
                 parse_mode=enums.ParseMode.HTML,
