@@ -26,8 +26,7 @@ async def add_channel_admin(client, message):
                 can_edit_messages=True,
                 can_delete_messages=True,
                 can_invite_users=True,
-                can_manage_chat=True,
-                can_promote_members=True
+                can_manage_chat=True
             ),
         )
         await message.reply("User added as an admin in the channel with specified privileges.")
