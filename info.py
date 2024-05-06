@@ -54,10 +54,21 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 # Others
 IS_VERIFY = is_enabled((environ.get('IS_VERIFY', 'False')), False)
 HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/+IvrcMfPKCMxkNjVl")
-VERIFY2_URL = environ.get('VERIFY2_URL', "omnifly.in.net")
-VERIFY2_API = environ.get('VERIFY2_API', "2f07494c29d95eacffbc5d6998bc56c91b8ee47d")
 SHORTLINK_URL = environ.get('SHORTLINK_URL', "omnifly.in.net")
 SHORTLINK_API = environ.get('SHORTLINK_API', "2f07494c29d95eacffbc5d6998bc56c91b8ee47d")
+
+VERIFY1_URL = environ.get('VERIFY1_URL', "ziplinker.net")
+VERIFY1_API = environ.get('VERIFY1_API', "12f1784cd5831936c8e4c6f5e414a2f31a22eb2f")
+
+VERIFY2_URL = environ.get('VERIFY2_URL', "omnifly.in.net")
+VERIFY2_API = environ.get('VERIFY2_API', "4294eebd727e09d894b8870419f9dd4112fb6fec")
+
+VERIFY3_URL = environ.get('VERIFY3_URL', "ziplinker.net")
+VERIFY3_API = environ.get('VERIFY3_API', "603c7a037b8bf4d5a9d2eaa43df6b84783da7aa6")
+
+VERIFY4_URL = environ.get('VERIFY4_URL', "instantearn.in")
+VERIFY4_API = environ.get('VERIFY4_API', "667b11aeda738ac4c494084055faff1f636f8534")
+
 IS_SHORTLINK = is_enabled((environ.get('IS_SHORTLINK', 'False')), False)
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '0').split()]
 MAX_B_TN = environ.get("MAX_B_TN", "5")
