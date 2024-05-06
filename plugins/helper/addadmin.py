@@ -27,7 +27,6 @@ async def add_channel_admin(client, message):
                 can_delete_messages=True,
                 can_invite_users=True,
                 can_manage_chat=True,
-                can_manage_live_streams=True,
                 can_promote_members=True
             ),
         )
