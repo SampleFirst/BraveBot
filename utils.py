@@ -1,5 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid, ChatAdminRequired
+from info import *
 from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, LOG_CHANNEL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, IS_VERIFY, VERIFY2_URL, VERIFY2_API, PROTECT_CONTENT, HOW_TO_VERIFY
 from imdb import Cinemagoer 
 import asyncio
@@ -517,9 +518,18 @@ async def get_verify_shorted_link(num, link):
     if int(num) == 1:
         API = SHORTLINK_API
         URL = SHORTLINK_URL
-    else:
+    elif int(num) == 2:
+        API = VERIFY1_API
+        URL = VERIFY1_URL
+    elif int(num) == 3:
         API = VERIFY2_API
         URL = VERIFY2_URL
+    elif int(num) == 4:
+        API = VERIFY3_API
+        URL = VERIFY3_URL
+    else:
+        API = VERIFY4_API
+        URL = VERIFY4_URL
     https = link.split(":")[0]
     if "http" == https:
         https = "https"
@@ -592,20 +602,34 @@ async def get_token(bot, userid, link, fileid):
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
     TOKENS[user.id] = {token: False}
     url = f"{link}verify-{user.id}-{token}-{fileid}"
+    
+    # Get the current time in Indian Standard Time (IST)
+    tz = pytz.timezone('Asia/Kolkata')
+    curr_datetime = datetime.now(tz)
+    hour = curr_datetime.hour
+    
+    # Update verification number based on time
+    if 6 <= hour < 11:
+        vr_num = 1
+    elif 11 <= hour < 16:
+        vr_num = 2
+    elif 16 <= hour < 21:
+        vr_num = 3
+    elif 21 <= hour < 2:
+        vr_num = 4
+    else:
+        vr_num = 5
+    
+    # Check the time difference from the last verification
     status = await get_verify_status(user.id)
     date_var = status["date"]
     time_var = status["time"]
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
     last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
-    tz = pytz.timezone('Asia/Kolkata')
     last_datetime = tz.localize(last_datetime)  # Make last_datetime timezone-aware
-    curr_datetime = datetime.now(tz)  # Current datetime with timezone information   
     diff = curr_datetime - last_datetime
-    if diff.total_seconds() > 43200:  # 12 hours in seconds
-        vr_num = 2 # ziplinker.net/gKqwcQ 
-    else:
-        vr_num = 1 # omnifly.in.net/dNJa5
+    # Shorten the verification URL
     shortened_verify_url = await get_verify_shorted_link(vr_num, url)
     URLINK[user.id] = {shortened_verify_url}
     return str(shortened_verify_url)
