@@ -604,15 +604,21 @@ async def get_token(bot, userid, link, fileid):
     url = f"{link}verify-{user.id}-{token}-{fileid}"
     status = await get_verify_status(user.id)
     short_var = status["short"]
+    date_var = status["date"]
+    time_var = status["time"]
+    hour, minute, second = time_var.split(":")
+    year, month, day = date_var.split("-")
+    last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
+    tz = pytz.timezone('Asia/Kolkata')
+    last_datetime = tz.localize(last_datetime)  # Make last_datetime timezone-aware
+    curr_datetime = datetime.now(tz)
     short_num = int(short_var)
-    if short_num == 5:
-        vr_num = 1
-        short_verify_url = await get_verify_shorted_link(vr_num, url)
-        URLINK[user.id] = {short_verify_url}
-    else:
+    if curr_datetime.date() == last_datetime.date() and short_num != 5:
         vr_num = short_num + 1
-        short_verify_url = await get_verify_shorted_link(vr_num, url)
-        URLINK[user.id] = {short_verify_url}
+    else:
+        vr_num = 1
+    short_verify_url = await get_verify_shorted_link(vr_num, url)
+    URLINK[user.id] = {short_verify_url}
     return str(short_verify_url)
 
 
