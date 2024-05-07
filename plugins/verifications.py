@@ -4,10 +4,10 @@ from pyrogram import Client, filters
 from database.users_chats_db import db
 from info import ADMINS
 
-@Client.on_message(filters.command("update_users") & filters.user(ADMINS))
+@Client.on_message(filters.command("updateusers") & filters.user(ADMINS))
 async def update_users(client, message):
-    total_users = await db.total_users_count()
     sts = await message.reply_text('Updating your messages...')
+    total_users = await db.total_users_count()
     start_time = time.time()
     count = 0
     complete = 0
