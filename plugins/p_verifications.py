@@ -1,18 +1,21 @@
 import datetime
 import time
+import asyncio
 from pyrogram import Client, filters
 from database.users_chats_db import db
 from info import ADMINS
 
 @Client.on_message(filters.command("updateusers") & filters.user(ADMINS))
 async def update_users_verifications(client, message):
-    sts = await message.reply_text('Updating your messages...')
+    sts = await message.reply_text('Updating users...')
     total_users = await db.total_users_count()
     start_time = time.time()
     count = 0
     complete = 0
     
-    async for user in await db.get_all_users():
+    users = await db.get_all_users()
+    
+    for user in users:
         user_id = user.get("id")
         short_temp = "1"
         date_temp = "1999-12-31"
