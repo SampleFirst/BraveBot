@@ -1,7 +1,7 @@
 import datetime
 import time
 from pyrogram import Client, filters
-from database.database import db
+from database.users_chats_db import db
 from info import ADMINS
 
 @Client.on_message(filters.command("update_users") & filters.user(ADMINS))
