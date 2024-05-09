@@ -612,7 +612,6 @@ async def get_token(bot, userid, link, fileid):
     tz = pytz.timezone('Asia/Kolkata')
     curr_date = datetime.now(tz)
     curr_time = curr_date.strftime("%H:%M:%S")
-    curr_date, curr_time = str(curr_date).split(" ")
     hour, minute, second = curr_time.split(":")
     year, month, day = curr_date.split("-")
     curr_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))    
