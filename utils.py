@@ -608,20 +608,23 @@ async def get_token(bot, userid, link, fileid):
     time_var = status["time"]
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
-    last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
+    last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))    
     tz = pytz.timezone('Asia/Kolkata')
-    last_datetime = tz.localize(last_datetime)  # Make last_datetime timezone-aware
-    curr_datetime = datetime.now(tz)
+    curr_date = datetime.now(tz)
+    curr_time = curr_date.strftime("%H:%M:%S")
+    curr_date, curr_time = str(curr_date).split(" ")
+    hour, minute, second = curr_time.split(":")
+    year, month, day = curr_date.split("-")
+    curr_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))    
     short_num = int(short_var)
-    if curr_datetime.date() == last_datetime.date() and short_num != 5:
+    if curr_datetime == last_datetime and short_num != 5:
         vr_num = short_num + 1
     else:
         vr_num = 1
     short_verify_url = await get_verify_shorted_link(vr_num, url)
-    URLINK[user.id] = {short_verify_url}
+    URLINK[user.id] = short_verify_url
     return str(short_verify_url)
-
-
+    
 async def send_all(bot, userid, files, ident):
     if AUTH_CHANNEL and not await is_subscribed(bot=bot, userid=userid):
         try:
@@ -704,7 +707,11 @@ async def send_all(bot, userid, files, ident):
 async def send_verification_log(bot, userid, short_temp, date_temp, time_temp):
     user = await bot.get_users(int(userid))
     url = URLINK[user.id]
-    log_message = f"#VerificationLog:\nUser ID: {user.id}\nUser Name: {user.mention}\nShortNum: {short_temp}\nDate: {date_temp}\nTime: {time_temp}\nUrl: {url}"
+    if short_temp == 1:
+        shortnum = 5
+    else:
+        shortnum = short_temp - 1
+    log_message = f"#VerificationLog:\nUser ID: {user.id}\nUser Name: {user.mention}\nShortNum: {shortnum}\nDate: {date_temp}\nTime: {time_temp}\nUrl: {url}"
     await bot.send_message(LOG_CHANNEL, log_message)
     
 async def get_verify_status(userid):
