@@ -609,12 +609,14 @@ async def get_token(bot, userid, link, fileid):
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
     last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))    
+    print(last_datetime)
     tz = pytz.timezone('Asia/Kolkata')
     curr_date = datetime.now(tz)
-    curr_time = curr_date.strftime("%H:%M:%S")
-    hour, minute, second = curr_time.split(":")
-    year, month, day = curr_date.split("-")
-    curr_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))    
+    curr_time = curr_date.strftime("%Y-%m-%d %H:%M:%S")
+    year, month, day = curr_time.split(" ")[0].split("-")
+    hour, minute, second = curr_time.split(" ")[1].split(":")
+    curr_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
+    print(curr_datetime)
     short_num = int(short_var)
     if curr_datetime == last_datetime and short_num != 5:
         vr_num = short_num + 1
