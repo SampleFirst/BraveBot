@@ -514,22 +514,86 @@ async def get_shortlink(chat_id, link):
             else:
                 return f'https://{URL}/api?api={API}&link={link}'
 
-async def get_verify_shorted_link(num, link):
+async def get_verify_shorted_link_first(num, link):
     if int(num) == 1:
-        API = SHORTLINK_API
-        URL = SHORTLINK_URL
+        API = SHORT1_API
+        URL = SHORT1_URL
     elif int(num) == 2:
+        API = SHORT2_API
+        URL = SHORT2_URL
+    elif int(num) == 3:
+        API = SHORT3_API
+        URL = SHORT3_URL
+    else:
+        API = SHORT4_API
+        URL = SHORT4_URL
+    
+    https = link.split(":")[0]
+    if "http" == https:
+        https = "https"
+        link = link.replace("http", https)
+
+    if URL == "api.shareus.in":
+        url = f"https://{URL}/shortLink"
+        params = {"token": API,
+                  "format": "json",
+                  "link": link,
+                  }
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
+                    data = await response.json(content_type="text/html")
+                    if data["status"] == "success":
+                        return data["shortlink"]
+                    else:
+                        logger.error(f"Error: {data['message']}")
+                        return f'https://{URL}/shortLink?token={API}&format=json&link={link}'
+
+        except Exception as e:
+            logger.error(e)
+            return f'https://{URL}/shortLink?token={API}&format=json&link={link}'
+    else:
+        url = f'https://{URL}/api'
+        params = {'api': API,
+                  'url': link,
+                  }
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
+                    data = await response.json()
+                    if data["status"] == "success":
+                        return data["shortenedUrl"]
+                    else:
+                        logger.error(f"Error: {data['message']}")
+                        if URL == 'clicksfly.com':
+                            short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
+                            return str(short_verify)
+                        else:
+                            short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
+                            return str(short_verify)
+        except Exception as e:
+            logger.error(e)
+            if URL == 'clicksfly.com':
+                short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
+                return str(short_verify)
+            else:
+                short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
+                return str(short_verify)
+            
+async def get_verify_shorted_link_second(num, link):
+    if int(num) == 1:
         API = VERIFY1_API
         URL = VERIFY1_URL
-    elif int(num) == 3:
+    elif int(num) == 2:
         API = VERIFY2_API
         URL = VERIFY2_URL
-    elif int(num) == 4:
+    elif int(num) == 3:
         API = VERIFY3_API
         URL = VERIFY3_URL
     else:
         API = VERIFY4_API
         URL = VERIFY4_URL
+    
     https = link.split(":")[0]
     if "http" == https:
         https = "https"
@@ -577,7 +641,8 @@ async def get_verify_shorted_link(num, link):
                 return f'https://{URL}/api?api={API}&url={link}'
             else:
                 return f'https://{URL}/api?api={API}&link={link}'
-
+            
+    
 async def check_token(bot, userid, token):
     user = await bot.get_users(userid)
     if not await db.is_user_exist(user.id):
@@ -608,21 +673,19 @@ async def get_token(bot, userid, link, fileid):
     time_var = status["time"]
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
-    last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))    
-    print(last_datetime)
+    last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
     tz = pytz.timezone('Asia/Kolkata')
     curr_date = datetime.now(tz)
     curr_time = curr_date.strftime("%Y-%m-%d %H:%M:%S")
     year, month, day = curr_time.split(" ")[0].split("-")
     hour, minute, second = curr_time.split(" ")[1].split(":")
     curr_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
-    print(curr_datetime)
     short_num = int(short_var)
     if curr_datetime == last_datetime and short_num != 5:
         vr_num = short_num + 1
     else:
         vr_num = 1
-    short_verify_url = await get_verify_shorted_link(vr_num, url)
+    short_verify_url = await get_verify_shorted_link_first(vr_num, url)
     URLINK[user.id] = short_verify_url
     return str(short_verify_url)
     
@@ -657,7 +720,7 @@ async def send_all(bot, userid, files, ident):
         ]]
         await bot.send_message(
             chat_id=userid,
-            text="<b>Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪғɪᴇᴅ!\nKɪɴᴅʟʏ ᴠᴇʀɪғʏ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ Sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ ɢᴇᴛ ᴀᴄᴄᴇss ᴛᴏ ᴜɴʟɪᴍɪᴛᴇᴅ ᴍᴏᴠɪᴇs ᴜɴᴛɪʟ 5 ʜᴏᴜʀs ғʀᴏᴍ ɴᴏᴡ !</b>",
+            text="<b>Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪғɪᴇᴅ!\nKɪɴᴅʟʏ ᴠᴇʀɪғʏ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ Sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ ɢᴇᴛ ᴀᴄᴄᴇss ᴛᴏ ᴜɴʟɪᴍɪᴛᴇᴅ ᴍᴏᴠɪᴇs ᴜɴᴛɪʟ 6 ʜᴏᴜʀs ғʀᴏᴍ ɴᴏᴡ !</b>",
             protect_content=True if PROTECT_CONTENT else False,
             reply_markup=InlineKeyboardMarkup(btn)
         )
@@ -741,7 +804,7 @@ async def verify_user(bot, userid, token):
     TOKENS[user.id] = {token: True}
     status = await get_verify_status(user.id)
     tz = pytz.timezone('Asia/Kolkata')
-    date_var = datetime.now(tz)+timedelta(hours=5)
+    date_var = datetime.now(tz)+timedelta(hours=6)
     temp_time = date_var.strftime("%H:%M:%S")
     date_var, time_var = str(date_var).split(" ")
     short_var = status["short"]
