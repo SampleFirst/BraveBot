@@ -566,19 +566,16 @@ async def get_verify_shorted_link_first(num, link):
                     else:
                         logger.error(f"Error: {data['message']}")
                         if URL == 'clicksfly.com':
-                            short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
-                            return str(short_verify)
+                            return f'https://{URL}/api?api={API}&url={link}'
                         else:
-                            short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
-                            return str(short_verify)
+                            return f'https://{URL}/api?api={API}&link={link}'
         except Exception as e:
             logger.error(e)
             if URL == 'clicksfly.com':
-                short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
-                return str(short_verify)
+                return f'https://{URL}/api?api={API}&url={link}'
             else:
-                short_verify = await get_verify_shorted_link_second(num, f'https://{URL}/api?api={API}&url={link}')
-                return str(short_verify)
+                return f'https://{URL}/api?api={API}&link={link}'
+            
             
 async def get_verify_shorted_link_second(num, link):
     if int(num) == 1:
@@ -685,7 +682,8 @@ async def get_token(bot, userid, link, fileid):
         vr_num = short_num + 1
     else:
         vr_num = 1
-    short_verify_url = await get_verify_shorted_link_first(vr_num, url)
+    short_verify = await get_verify_shorted_link_first(vr_num, url)
+    short_verify_url = await get_verify_shorted_link_second(vr_num, short_verify)
     URLINK[user.id] = short_verify_url
     return str(short_verify_url)
     
