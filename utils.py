@@ -853,7 +853,7 @@ async def verify_user(bot, userid, token):
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     TOKENS[user.id] = {token: True}
     start_time = START_TIME[user.id]
-    timer_temp = datetime.timedelta(seconds=int(time.time()-start_time))
+    timer_temp = timedelta(seconds=int(time.time()-start_time))
     today_temp = await count_today_shorts(userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
     status = await get_verify_status(user.id)
     tz = pytz.timezone('Asia/Kolkata')
