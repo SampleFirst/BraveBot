@@ -13,7 +13,7 @@ import random
 import re
 import os
 import time
-from datetime import datetime, timedelta, date, time
+from datetime import datetime, timedelta, date, time as timz
 import string
 from typing import List
 from database.users_chats_db import db
@@ -879,14 +879,14 @@ async def check_verification(bot, userid):
     now = datetime.now(tz)
     curr_time = now.strftime("%H:%M:%S")
     hour1, minute1, second1 = curr_time.split(":")
-    curr_time = time(int(hour1), int(minute1), int(second1))
+    curr_time = timz(int(hour1), int(minute1), int(second1))
     status = await get_verify_status(user.id)
     date_var = status["date"]
     time_var = status["time"]
     years, month, day = date_var.split('-')
     comp_date = date(int(years), int(month), int(day))
     hour, minute, second = time_var.split(":")
-    comp_time = time(int(hour), int(minute), int(second))
+    comp_time = timz(int(hour), int(minute), int(second))
     if comp_date<today:
         return False
     else:
