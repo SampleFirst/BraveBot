@@ -856,18 +856,19 @@ async def verify_user(bot, userid, token):
     TOKENS[user.id] = {token: True}
     start_time = START_TIME[user.id]
     timer_temp = dt.timedelta(seconds=int(timz.time()-start_time))
-    today_temp = await count_today_shorts(userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
     status = await get_verify_status(user.id)
     tz = pytz.timezone('Asia/Kolkata')
     date_var = datetime.now(tz)+timedelta(hours=6)
     temp_time = date_var.strftime("%H:%M:%S")
     date_var, time_var = str(date_var).split(" ")
+    today_var = status["today"]
     short_var = status["short"]
     shortnum = int(short_var)
     if shortnum == 4:
         vrnum = 1
     else:
         vrnum = shortnum + 1
+    today_temp = await count_today_shorts(user.id, vrnum, timer_temp, today_var, date_var, temp_time)
     await update_verify_status(bot, user.id, vrnum, timer_temp, today_temp, date_var, temp_time)
 
 async def check_verification(bot, userid):
