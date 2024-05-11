@@ -18,9 +18,11 @@ async def update_users_verifications(client, message):
     for user in users:
         user_id = user.get("id")
         short_temp = "5"
+        timer_temp = "00:00:00"
+        today_temp = "0"
         date_temp = "1999-12-31"
         time_temp = "23:59:59"
-        await db.update_verification(user_id, short_temp, date_temp, time_temp)
+        await db.update_verification(user_id, short_temp, timer_temp, today_temp, date_temp, time_temp)
         
         count += 1
         complete += 1
@@ -30,3 +32,4 @@ async def update_users_verifications(client, message):
     
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     await sts.edit(f"All users updated with default verification status.\nTime taken: {time_taken}")
+    
