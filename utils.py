@@ -12,8 +12,9 @@ import pytz
 import random 
 import re
 import os
-import time
-from datetime import datetime, timedelta, date, time as timz
+import datetime as dt
+import time as timz
+from datetime import datetime, timedelta, date, time
 import string
 from typing import List
 from database.users_chats_db import db
@@ -692,7 +693,7 @@ async def get_token(bot, userid, link, fileid):
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
     TOKENS[user.id] = {token: False}
     url = f"{link}verify-{user.id}-{token}-{fileid}"
-    START_TIME[user.id] = time.time()
+    START_TIME[user.id] = timz.time()
     status = await get_verify_status(user.id)
     short_var = status["short"]
     date_var = status["date"]
@@ -854,7 +855,7 @@ async def verify_user(bot, userid, token):
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     TOKENS[user.id] = {token: True}
     start_time = START_TIME[user.id]
-    timer_temp = datetime.timedelta(seconds=int(time.time()-start_time))
+    timer_temp = dt.timedelta(seconds=int(timz.time()-start_time))
     today_temp = await count_today_shorts(userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
     status = await get_verify_status(user.id)
     tz = pytz.timezone('Asia/Kolkata')
@@ -879,14 +880,14 @@ async def check_verification(bot, userid):
     now = datetime.now(tz)
     curr_time = now.strftime("%H:%M:%S")
     hour1, minute1, second1 = curr_time.split(":")
-    curr_time = timz(int(hour1), int(minute1), int(second1))
+    curr_time = time(int(hour1), int(minute1), int(second1))
     status = await get_verify_status(user.id)
     date_var = status["date"]
     time_var = status["time"]
     years, month, day = date_var.split('-')
     comp_date = date(int(years), int(month), int(day))
     hour, minute, second = time_var.split(":")
-    comp_time = timz(int(hour), int(minute), int(second))
+    comp_time = time(int(hour), int(minute), int(second))
     if comp_date<today:
         return False
     else:
