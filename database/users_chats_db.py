@@ -76,11 +76,11 @@ class Database:
         }
         user = await self.col.find_one({'id':int(id)})
         if not user:
-            await self.col2.update_one({'id': int(id)}, {'$set': {'verification_status': status}})
+            await self.col2.update_one({'id': int(id)}, {'$push': {'verification_status': status}})
         else:
-            await self.col.update_one({'id': int(id)}, {'$set': {'verification_status': status}})
+            await self.col.update_one({'id': int(id)}, {'$push': {'verification_status': status}})
 
-    async def get_verified(self, id):
+    async def get_verified(self, id, short=None):
         default = {
             'short': "5",
             'timer': "00:00:00",
@@ -90,11 +90,23 @@ class Database:
         }
         user = await self.col.find_one({'id': int(id)})
         if user:
-            return user.get("verification_status", default)
+            if short:
+                for v_status in user.get("verification_status", default):
+                    if v_status.get('short') == short:
+                        return v_status
+                return None
+            else:
+                return user.get("verification_status", default)
         else:
             user = await self.col2.find_one({'id': int(id)})
             if user:
-                return user.get("verification_status", default)
+                if short:
+                    for v_status in user.get("verification_status", default):
+                        if v_status.get('short') == short:
+                            return v_status
+                    return None
+                else:
+                    return user.get("verification_status", default)
         return default
 
     async def save_chat_invite_link(self, chat_id, invite_link):
