@@ -76,9 +76,9 @@ class Database:
         }
         user = await self.col.find_one({'id':int(id)})
         if not user:
-            await self.col2.update_one({'id': int(id)}, {'$push': {'verification_status': status}})
+            await self.col2.update_one({'id': int(id), 'short':int(short)}, {'$set': {'verification_status': status}})
         else:
-            await self.col.update_one({'id': int(id)}, {'$push': {'verification_status': status}})
+            await self.col.update_one({'id': int(id), 'short':int(short)}, {'$set': {'verification_status': status}})
 
     async def get_verified(self, id, short=None):
         default = {
@@ -90,23 +90,19 @@ class Database:
         }
         user = await self.col.find_one({'id': int(id)})
         if user:
-            if short:
-                for v_status in user.get("verification_status", default):
-                    if v_status.get('short') == short:
-                        return v_status
-                return None
+            verification_status = user.get("verification_status", {})
+            if short is not None:
+                return verification_status.get(short, default)
             else:
-                return user.get("verification_status", default)
+                return verification_status
         else:
             user = await self.col2.find_one({'id': int(id)})
             if user:
-                if short:
-                    for v_status in user.get("verification_status", default):
-                        if v_status.get('short') == short:
-                            return v_status
-                    return None
+                verification_status = user.get("verification_status", {})
+                if short is not None:
+                    return verification_status.get(short, default)
                 else:
-                    return user.get("verification_status", default)
+                    return verification_status
         return default
 
     async def save_chat_invite_link(self, chat_id, invite_link):
