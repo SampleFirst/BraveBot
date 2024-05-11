@@ -66,9 +66,11 @@ class Database:
         }))
         return count
     
-    async def update_verification(self, id, short, date, time):
+    async def update_verification(self, id, short, timer, today, date, time):
         status = {
             'short': str(short),
+            'timer': str(timer),
+            'today': str(today),
             'date': str(date),
             'time': str(time)
         }
@@ -81,6 +83,8 @@ class Database:
     async def get_verified(self, id):
         default = {
             'short': "5",
+            'timer': "00:00:00",
+            'today': "0",
             'date': "2023-12-31",
             'time': "23:59:59"
         }
