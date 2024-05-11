@@ -12,7 +12,6 @@ import pytz
 import random 
 import re
 import os
-import time
 from datetime import datetime, timedelta, date, time
 import string
 from typing import List
@@ -692,7 +691,7 @@ async def get_token(bot, userid, link, fileid):
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
     TOKENS[user.id] = {token: False}
     url = f"{link}verify-{user.id}-{token}-{fileid}"
-    START_TIME[user.id] = time.time()
+    START_TIME[user.id] = datetime.now()
     status = await get_verify_status(user.id)
     short_var = status["short"]
     date_var = status["date"]
