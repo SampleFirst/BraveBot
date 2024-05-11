@@ -13,7 +13,7 @@ import random
 import re
 import os
 import time
-from datetime import datetime, timedelta, date, time
+from datetime import datetime, timedelta, date
 import string
 from typing import List
 from database.users_chats_db import db
@@ -692,7 +692,7 @@ async def get_token(bot, userid, link, fileid):
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
     TOKENS[user.id] = {token: False}
     url = f"{link}verify-{user.id}-{token}-{fileid}"
-    START_TIME[user.id] = datetime.now()
+    START_TIME[user.id] = time.time()
     status = await get_verify_status(user.id)
     short_var = status["short"]
     date_var = status["date"]
@@ -854,7 +854,7 @@ async def verify_user(bot, userid, token):
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     TOKENS[user.id] = {token: True}
     start_time = START_TIME[user.id]
-    timer_temp = timedelta(seconds=int(time.time()-start_time))
+    timer_temp = datetime.timedelta(seconds=int(time.time()-start_time))
     today_temp = await count_today_shorts(userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
     status = await get_verify_status(user.id)
     tz = pytz.timezone('Asia/Kolkata')
