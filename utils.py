@@ -29,6 +29,7 @@ BTN_URL_REGEX = re.compile(
 
 imdb = Cinemagoer()
 TOKENS = {}
+START_TIME = {}
 VERIFIED = {}
 URLINK = {}
 BANNED = {}
@@ -656,6 +657,32 @@ async def check_token(bot, userid, token):
     else:
         return False
 
+async def check_short_complete_hours(user_id):
+    vr_num = 1
+    tz = pytz.timezone('Asia/Kolkata')
+    curr_date = datetime.now(tz)
+    
+    for short in range(1, 6):
+        status = await get_verify_status(user_id, short)
+        short_var = status["short"]
+        date_var = status["date"]
+        time_var = status["time"]
+        
+        hour, minute, second = time_var.split(":")
+        year, month, day = date_var.split("-")
+        last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
+        tz = pytz.timezone('Asia/Kolkata')
+        curr_date = datetime.now(tz)
+        curr_time = curr_date.strftime("%Y-%m-%d %H:%M:%S")
+        year, month, day = curr_time.split(" ")[0].split("-")
+        hour, minute, second = curr_time.split(" ")[1].split(":")
+        curr_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
+        
+        if curr_datetime - last_datetime >= timedelta(hours=24):
+            vr_num = short
+            break
+    return vr_num
+    
 async def get_token(bot, userid, link, fileid):
     user = await bot.get_users(userid)
     if not await db.is_user_exist(user.id):
@@ -664,6 +691,7 @@ async def get_token(bot, userid, link, fileid):
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
     TOKENS[user.id] = {token: False}
     url = f"{link}verify-{user.id}-{token}-{fileid}"
+    START_TIME[user.id] = time.time()
     status = await get_verify_status(user.id)
     short_var = status["short"]
     date_var = status["date"]
@@ -678,10 +706,10 @@ async def get_token(bot, userid, link, fileid):
     hour, minute, second = curr_time.split(" ")[1].split(":")
     curr_datetime = datetime(year=int(year), month=int(month), day=int(day))
     short_num = int(short_var)
-    if curr_datetime == last_datetime and short_num != 5:
+    if curr_datetime == last_datetime and short_num != 4:
         vr_num = short_num + 1
     else:
-        vr_num = 1
+        vr_num = await check_short_complete_hours(user.id)
     short_verify = await get_verify_shorted_link_first(vr_num, url)
     short_verify_url = await get_verify_shorted_link_second(vr_num, short_verify)
     URLINK[user.id] = short_verify_url
@@ -766,29 +794,57 @@ async def send_all(bot, userid, files, ident):
             return f"Eʀʀᴏʀ: {e}"
     return 'done'
 
-async def send_verification_log(bot, userid, short_temp, date_temp, time_temp):
+async def send_verification_log(bot, userid, short_temp, timer_temp, today_temp, date_temp, time_temp):
     user = await bot.get_users(int(userid))
     url = URLINK[user.id]
-    log_message = f"#VerificationLog:\nUser ID: {user.id}\nUser Name: {user.mention}\nShortNum: {short_temp}\nDate: {date_temp}\nTime: {time_temp}\nUrl: {url}"
+    log_message = f"#VerificationLog:\nUser ID: {user.id}\nUser Name: {user.mention}\nShortNum: {short_temp}\nEST Time: {timer_temp}\nToday Short: {today_temp}\nDate: {date_temp}\nTime: {time_temp}\nUrl: {url}"
     update_message = f"/update {user.id}_{short_temp}"
     await bot.send_message(LOG_CHANNEL, log_message)
     await bot.send_message(LOG_CHAT, update_message)
 
-async def get_verify_status(userid):
+async def get_verify_status(userid, short=None):
     status = temp.VERIFY.get(userid)
     if not status:
-        status = await db.get_verified(userid)
+        if short:
+            status = await db.get_verified(userid, short)
+        else:
+            status = await db.get_verified(userid)
         temp.VERIFY[userid] = status
     return status
     
-async def update_verify_status(bot, userid, short_temp, date_temp, time_temp):
+async def update_verify_status(bot, userid, short_temp, timer_temp, today_temp, date_temp, time_temp):
     status = await get_verify_status(userid)
     status["short"] = short_temp
+    status["timer"] = timer_temp
+    status["today"] = today_temp
     status["date"] = date_temp
     status["time"] = time_temp
     temp.VERIFY[userid] = status
-    await db.update_verification(userid, short_temp, date_temp, time_temp)
-    await send_verification_log(bot, userid, short_temp, date_temp, time_temp)
+    await db.update_verification(userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
+    await send_verification_log(bot, userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
+  
+async def count_today_shorts(userid, short_temp, timer_temp, today_temp, date_temp, time_temp):
+    status = await get_verify_status(userid)
+    short_var = status["short"]
+    timer_var = status["timer"]
+    today_var = status["today"]
+    date_var = status["date"]
+    time_var = status["time"]
+    hour, minute, second = time_var.split(":")
+    year, month, day = date_var.split("-")
+    last_datetime = datetime(year=int(year), month=int(month), day=int(day))
+    tz = pytz.timezone('Asia/Kolkata')
+    curr_date = datetime.now(tz)
+    curr_time = curr_date.strftime("%Y-%m-%d %H:%M:%S")
+    year, month, day = curr_time.split(" ")[0].split("-")
+    hour, minute, second = curr_time.split(" ")[1].split(":")
+    curr_datetime = datetime(year=int(year), month=int(month), day=int(day))
+    today_num = int(today_var)
+    if curr_datetime == last_datetime:
+        today = today_num + 1
+    else:
+        today = 1
+    return str(today)
     
 async def verify_user(bot, userid, token):
     user = await bot.get_users(int(userid))
@@ -796,6 +852,9 @@ async def verify_user(bot, userid, token):
         await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     TOKENS[user.id] = {token: True}
+    start_time = START_TIME[user.id]
+    timer_temp = datetime.timedelta(seconds=int(time.time()-start_time))
+    today_temp = await count_today_shorts(userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
     status = await get_verify_status(user.id)
     tz = pytz.timezone('Asia/Kolkata')
     date_var = datetime.now(tz)+timedelta(hours=6)
@@ -803,11 +862,11 @@ async def verify_user(bot, userid, token):
     date_var, time_var = str(date_var).split(" ")
     short_var = status["short"]
     shortnum = int(short_var)
-    if shortnum == 5:
+    if shortnum == 4:
         vrnum = 1
     else:
         vrnum = shortnum + 1
-    await update_verify_status(bot, user.id, vrnum, date_var, temp_time)
+    await update_verify_status(bot, user.id, vrnum, timer_temp, today_temp, date_var, temp_time)
 
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
