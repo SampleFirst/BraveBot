@@ -74,11 +74,11 @@ class Database:
             'date': str(date),
             'time': str(time)
         }
-        user = await self.col.find_one({'id': int(id), 'short':int(short)})
+        user = await self.col.find_one({'id': int(id), 'short': int(short)})
         if not user:
-            await self.col2.update_one({'id': int(id), 'short':int(short)}, {'$set': {'verification_status': status}})
+            await self.col2.update_one({'id': int(id), 'short': int(short)}, {'$set': {'verification_status': status}}, upsert=True)
         else:
-            await self.col.update_one({'id': int(id), 'short':int(short)}, {'$set': {'verification_status': status}})
+            await self.col.update_one({'id': int(id), 'short': int(short)}, {'$set': {'verification_status': status}}, upsert=True)
 
     async def get_verified(self, id, short=None):
         default = {
