@@ -678,7 +678,7 @@ async def get_token(bot, userid, link, fileid):
     hour, minute, second = curr_time.split(" ")[1].split(":")
     curr_datetime = datetime(year=int(year), month=int(month), day=int(day))
     short_num = int(short_var)
-    if curr_datetime == last_datetime and short_num != 5:
+    if curr_datetime == last_datetime and short_num != 4:
         vr_num = short_num + 1
     else:
         vr_num = 1
@@ -803,7 +803,7 @@ async def verify_user(bot, userid, token):
     date_var, time_var = str(date_var).split(" ")
     short_var = status["short"]
     shortnum = int(short_var)
-    if shortnum == 5:
+    if shortnum == 4:
         vrnum = 1
     else:
         vrnum = shortnum + 1
