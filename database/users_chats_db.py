@@ -72,6 +72,7 @@ class Database:
             await self.col2.update_one(
                 {'id': int(id), 'short': str(short)},
                 {'$set': {'verification_status': {
+                    'short': str(short),
                     'timer': str(timer),
                     'today': str(today),
                     'date': str(date),
@@ -83,6 +84,7 @@ class Database:
             await self.col.update_one(
                 {'id': int(id), 'short': str(short)},
                 {'$set': {'verification_status': {
+                    'short': str(short),
                     'timer': str(timer),
                     'today': str(today),
                     'date': str(date),
