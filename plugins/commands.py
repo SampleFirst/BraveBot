@@ -1109,3 +1109,26 @@ async def verification(client, message):
     
     await message.reply_text(text)
     
+
+@Client.on_message(filters.command("verify"))
+async def verification_data(client, message):
+    # Get user ID
+    user_id = message.from_user.id
+    # Get verification data
+    verification_data = await db.get_verified(user_id)
+    # Format the verification data
+    short = verification_data['short']
+    timer = verification_data['timer']
+    today = verification_data['today']
+    date = verification_data['date']
+    time = verification_data['time']
+    
+    formatted_data = f"""
+    Short link: {short}
+    Timer: {timer}
+    Today: {today}
+    Date: {date}
+    Time: {time}
+    """
+    # Send the formatted data as a message
+    await message.reply_text(formatted_data)
