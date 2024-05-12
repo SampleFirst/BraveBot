@@ -67,18 +67,30 @@ class Database:
         return count
     
     async def update_verification(self, id, short, timer, today, date, time):
-        status = {
-            'timer': str(timer),
-            'today': str(today),
-            'date': str(date),
-            'time': str(time)
-        }
-        user = await self.col.find_one({'id': int(id), 'short':int(short)})
+        user = await self.col.find_one({'id': int(id), 'short': str(short))
         if not user:
-            await self.col2.update_one({'id': int(id), 'short':int(short)}, {'$set': {'verification_status': status}})
+            await self.col2.update_one(
+                {'id': int(id), 'short': str(short),
+                {'$set': {'verification_status.short': {
+                    'timer': str(timer),
+                    'today': str(today),
+                    'date': str(date),
+                    'time': str(time)
+                }}}}
+                upsert=True
+            )
         else:
-            await self.col.update_one({'id': int(id), 'short':int(short)}, {'$set': {'verification_status': status}})
-
+            await self.col.update_one(
+                {'id': int(id), 'short': str(short),
+                {'$set': {'verification_status.short': {
+                    'timer': str(timer),
+                    'today': str(today),
+                    'date': str(date),
+                    'time': str(time)
+                }}}}
+                upsert=True
+            )
+                
     async def get_verified(self, id, short=None):
         default = {
             'timer': "23:59:59",
