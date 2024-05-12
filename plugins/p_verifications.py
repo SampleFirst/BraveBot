@@ -14,7 +14,7 @@ async def update_users(client, message):
         short_temp = "5"
         timer_temp = "00:00:30"
         today_temp = "1"
-        date_temp = "1999-12-31"
+        date_temp = "1998-12-31"
         time_temp = "23:59:59"
         await db.update_verification(userid, short_temp, timer_temp, today_temp, date_temp, time_temp)
         
