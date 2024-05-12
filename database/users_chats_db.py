@@ -74,7 +74,7 @@ class Database:
             'date': str(date),
             'time': str(time)
         }
-        user = await self.col.find_one({'id':int(id)})
+        user = await self.col.find_one({'id': int(id), 'short':int(short)})
         if not user:
             await self.col2.update_one({'id': int(id), 'short':int(short)}, {'$set': {'verification_status': status}})
         else:
