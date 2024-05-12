@@ -83,7 +83,7 @@ class Database:
     async def get_verified(self, id, short=None):
         default = {
             'short': "5",
-            'timer': "00:00:30",
+            'timer': "0:00:30",
             'today': "1",
             'date': "2023-12-31",
             'time': "23:59:59"
