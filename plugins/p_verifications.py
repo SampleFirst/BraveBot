@@ -18,8 +18,8 @@ async def update_users_verifications(client, message):
     for user in users:
         user_id = user.get("id")
         short_temp = "5"
-        timer_temp = "00:00:00"
-        today_temp = "0"
+        timer_temp = "00:00:30"
+        today_temp = "1"
         date_temp = "1999-12-31"
         time_temp = "23:59:59"
         await db.update_verification(user_id, short_temp, timer_temp, today_temp, date_temp, time_temp)
