@@ -66,55 +66,31 @@ class Database:
         }))
         return count
     
-    async def update_verification(self, id, short, timer, today, date, time):
-        user = await self.col.find_one({'id': int(id), 'short': str(short)})
+    async def update_verification(self, id, short, date, time):
+        status = {
+            'short': str(short),
+            'date': str(date),
+            'time': str(time)
+        }
+        user = await self.col.find_one({'id':int(id)})
         if not user:
-            await self.col2.update_one(
-                {'id': int(id), 'short': str(short)},
-                {'$set': {'verification_status': {
-                    'short': str(short),
-                    'timer': str(timer),
-                    'today': str(today),
-                    'date': str(date),
-                    'time': str(time)
-                }}},
-                upsert=True
-            )
+            await self.col2.update_one({'id': int(id)}, {'$set': {'verification_status': status}})
         else:
-            await self.col.update_one(
-                {'id': int(id), 'short': str(short)},
-                {'$set': {'verification_status': {
-                    'short': str(short),
-                    'timer': str(timer),
-                    'today': str(today),
-                    'date': str(date),
-                    'time': str(time)
-                }}},
-                upsert=True
-            )
-                
-    async def get_verified(self, id, short=None):
+            await self.col.update_one({'id': int(id)}, {'$set': {'verification_status': status}})
+
+    async def get_verified(self, id):
         default = {
-            'timer': "23:59:59",
-            'today': "1",
+            'short': "5",
             'date': "2023-12-31",
             'time': "23:59:59"
         }
         user = await self.col.find_one({'id': int(id)})
         if user:
-            verification_status = user.get("verification_status", {})
-            if short is not None:
-                return verification_status.get(short, default)
-            else:
-                return verification_status
+            return user.get("verification_status", default)
         else:
             user = await self.col2.find_one({'id': int(id)})
             if user:
-                verification_status = user.get("verification_status", {})
-                if short is not None:
-                    return verification_status.get(short, default)
-                else:
-                    return verification_status
+                return user.get("verification_status", default)
         return default
 
     async def save_chat_invite_link(self, chat_id, invite_link):
