@@ -1719,12 +1719,13 @@ async def auto_filter(client, msg, spoll=False):
     else:
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
+    url = f"version-{message.from_user.id}-{file.file_id}"
     pre = 'filep' if settings['file_secure'] else 'file'
     if IS_VERIFY and not await check_verification(client, message.from_user.id):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-message.from_user.id-file.file_id"
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=url"
                 ),
             ]
             for file in files
