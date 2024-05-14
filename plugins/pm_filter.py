@@ -123,12 +123,6 @@ async def pm_text(bot, message):
         await message.delete()
         await reply_message.delete()
 
-# Define a function to delete messages containing a specific text
-@Client.on_message(filters.channel & filters.text)
-async def delete_aut_messages(client, message):
-    if "@Auto_Forward_Messages_Bot" in message.text:
-        await message.delete()
-
 
 @Client.on_callback_query(filters.regex(r"^next"))
 async def next_page(bot, query):
@@ -163,7 +157,7 @@ async def next_page(bot, query):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-{query.from_user.id}-{file.file_id}"
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{query.from_user.id}-{file.file_id}"
                 ),
             ]
             for file in files
@@ -343,7 +337,7 @@ async def language_check(bot, query):
             btn = [
                 [
                     InlineKeyboardButton(
-                        text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-{query.from_user.id}-{file.file_id}"
+                        text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{query.from_user.id}-{file.file_id}"
                     ),
                 ]
                 for file in files
@@ -1742,7 +1736,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-{message.from_user.id}-{file.file_id}"
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{message.from_user.id}-{file.file_id}"
                 ),
             ]
             for file in files
