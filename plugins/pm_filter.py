@@ -1,4 +1,3 @@
-# Kanged From @TroJanZheX
 import asyncio
 import re
 import ast
@@ -6,7 +5,6 @@ import math
 import random
 import pyrogram
 lock = asyncio.Lock()
-
 import pytz
 from datetime import datetime
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
@@ -21,17 +19,10 @@ from pyrogram.errors import UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import get_size, is_subscribed, get_poster, temp, get_settings, save_group_settings, get_shortlink, send_all, check_verification, get_token
 from database.users_chats_db import db
 from database.ia_filterdb import Media, Media2, get_file_details, get_search_results, get_bad_files, db as clientDB, db2 as clientDB2
-from database.filters_mdb import (
-    del_all,
-    find_filter,
-    get_filters,
-)
-from database.gfilters_mdb import (
-    find_gfilter,
-    get_gfilters,
-    del_allg
-)
-from plugins.helper.restriction import restrict_filters
+from database.filters_mdb import del_all, find_filter, get_filters
+from pyrogram.errors.exceptions.forbidden_403 import MessageDeleteForbidden
+from pyrogram.enums import MessageEntityType, ChatMemberStatus
+from database.gfilters_mdb import find_gfilter, get_gfilters, del_allg
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,6 +31,20 @@ logger.setLevel(logging.ERROR)
 BUTTONS = {}
 SPELL_CHECK = {}
 
+allowed_entity_types = [
+    MessageEntityType.MENTION,
+    MessageEntityType.HASHTAG,
+    MessageEntityType.CASHTAG,
+    MessageEntityType.BOT_COMMAND,
+    MessageEntityType.URL,
+    MessageEntityType.EMAIL,
+    MessageEntityType.PHONE_NUMBER,
+    MessageEntityType.PRE,
+    MessageEntityType.BLOCKQUOTE,
+    MessageEntityType.TEXT_LINK,
+    MessageEntityType.TEXT_MENTION,
+    MessageEntityType.CUSTOM_EMOJI,
+]
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
@@ -47,31 +52,8 @@ async def give_filter(client, message):
     if restrict:
         return 
     else:
-        if message.chat.id != SUPPORT_CHAT_ID:
-            glob = await global_filters(client, message)
-            if not glob:
-                manual = await manual_filters(client, message)
-                if not manual:
-                    settings = await get_settings(message.chat.id)
-                    try:
-                        if settings['auto_ffilter']:
-                            await auto_filter(client, message)
-                    except KeyError:
-                        grpid = await active_connection(str(message.from_user.id))
-                        await save_group_settings(grpid, 'auto_ffilter', True)
-                        settings = await get_settings(message.chat.id)
-                        if settings['auto_ffilter']:
-                            await auto_filter(client, message)
-        else:
-            search = message.text
-            temp_files, temp_offset, total_results = await get_search_results(chat_id=message.chat.id, query=search.lower(), offset=0, filter=True)
-            if total_results == 0:
-                return
-            else:
-                return await message.reply_text(
-                    text=f"<b>Hᴇʏ {message.from_user.mention}, {str(total_results)} ʀᴇsᴜʟᴛs ᴀʀᴇ ғᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ ғᴏʀ ʏᴏᴜʀ ᴏ̨ᴜᴇʀʏ {search}. Kɪɴᴅʟʏ ᴜsᴇ ɪɴʟɪɴᴇ sᴇᴀʀᴄʜ ᴏʀ ᴍᴀᴋᴇ ᴀ ɢʀᴏᴜᴘ ᴀɴᴅ ᴀᴅᴅ ᴍᴇ ᴀs ᴀᴅᴍɪɴ ᴛᴏ ɢᴇᴛ ᴍᴏᴠɪᴇ ғɪʟᴇs. Tʜɪs ɪs ᴀ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ғɪʟᴇs ғʀᴏᴍ ʜᴇʀᴇ...</b>",
-                    parse_mode=enums.ParseMode.HTML
-                )
+        await auto_filter(client, message)
+
                 
 @Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_text(bot, message):
@@ -1025,11 +1007,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#auto_delete#{settings["auto_delete"]}#{str(grp_id)}')
                 ],
                 [
-                    InlineKeyboardButton('Aᴜᴛᴏ-Fɪʟᴛᴇʀ', callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}'),
-                    InlineKeyboardButton('✔ Oɴ' if settings["auto_ffilter"] else '✘ Oғғ',
-                                         callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}')
-                ],
-                [
                     InlineKeyboardButton('Mᴀx Bᴜᴛᴛᴏɴs', callback_data=f'setgs#max_btn#{settings["max_btn"]}#{str(grp_id)}'),
                     InlineKeyboardButton('10' if settings["max_btn"] else f'{MAX_B_TN}',
                                          callback_data=f'setgs#max_btn#{settings["max_btn"]}#{str(grp_id)}')
@@ -1046,6 +1023,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     InlineKeyboardButton('File Send Mode', callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}'),
                     InlineKeyboardButton('Bot PM' if settings["botpm"] else 'Channel',
                                          callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}')
+                ],
+                [
+                    InlineKeyboardButton('Aᴜᴛᴏ-Fɪʟᴛᴇʀ', callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}'),
+                    InlineKeyboardButton('✔ Oɴ' if settings["auto_ffilter"] else '✘ Oғғ',
+                                         callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}')
                 ])
     
             reply_markup = InlineKeyboardMarkup(buttons)
@@ -1107,11 +1089,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#auto_delete#{settings["auto_delete"]}#{str(grp_id)}')
                 ],
                 [
-                    InlineKeyboardButton('Aᴜᴛᴏ-Fɪʟᴛᴇʀ', callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}'),
-                    InlineKeyboardButton('✔ Oɴ' if settings["auto_ffilter"] else '✘ Oғғ',
-                                         callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}')
-                ],
-                [
                     InlineKeyboardButton('Mᴀx Bᴜᴛᴛᴏɴs', callback_data=f'setgs#max_btn#{settings["max_btn"]}#{str(grp_id)}'),
                     InlineKeyboardButton('10' if settings["max_btn"] else f'{MAX_B_TN}',
                                          callback_data=f'setgs#max_btn#{settings["max_btn"]}#{str(grp_id)}')
@@ -1128,6 +1105,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     InlineKeyboardButton('File Send Mode', callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}'),
                     InlineKeyboardButton('Bot PM' if settings["botpm"] else 'Channel',
                                          callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}')
+                ],
+                [
+                    InlineKeyboardButton('Aᴜᴛᴏ-Fɪʟᴛᴇʀ', callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}'),
+                    InlineKeyboardButton('✔ Oɴ' if settings["auto_ffilter"] else '✘ Oғғ',
+                                         callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}')
                 ])
             reply_markup = InlineKeyboardMarkup(buttons)
             await client.send_message(
@@ -1627,11 +1609,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                          callback_data=f'setgs#auto_delete#{settings["auto_delete"]}#{str(grp_id)}')
                 ],
                 [
-                    InlineKeyboardButton('Aᴜᴛᴏ-Fɪʟᴛᴇʀ', callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}'),
-                    InlineKeyboardButton('✔ Oɴ' if settings["auto_ffilter"] else '✘ Oғғ',
-                                         callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}')
-                ],
-                [
                     InlineKeyboardButton('Mᴀx Bᴜᴛᴛᴏɴs', callback_data=f'setgs#max_btn#{settings["max_btn"]}#{str(grp_id)}'),
                     InlineKeyboardButton('10' if settings["max_btn"] else f'{MAX_B_TN}',
                                          callback_data=f'setgs#max_btn#{settings["max_btn"]}#{str(grp_id)}')
@@ -1648,12 +1625,68 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     InlineKeyboardButton('File Send Mode', callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}'),
                     InlineKeyboardButton('Bot PM' if settings["botpm"] else 'Channel',
                                          callback_data=f'setgs#botpm#{settings["botpm"]}#{str(grp_id)}')
+                ],
+                [
+                    InlineKeyboardButton('Aᴜᴛᴏ-Fɪʟᴛᴇʀ', callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}'),
+                    InlineKeyboardButton('✔ Oɴ' if settings["auto_ffilter"] else '✘ Oғғ',
+                                         callback_data=f'setgs#auto_ffilter#{settings["auto_ffilter"]}#{str(grp_id)}')
                 ])
             reply_markup = InlineKeyboardMarkup(buttons)
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
 
-    
+async def restrict_filters(client, message):
+    if message.entities is None:
+        return  # Skip processing if there are no entities
+
+    grp_id = message.chat.id
+    title = message.chat.title
+    user_id = message.from_user.id
+
+    try:
+        # Check if user is an admin or owner
+        st = await client.get_chat_member(grp_id, user_id)
+        if (
+            st.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]
+            or str(user_id) in ADMINS
+        ):
+            return  # Skip processing for admins, owners, or listed ADMINS
+    except Exception as e:
+        logging.error(f"Error checking user status: {e}")
+
+    deleted_entities = []
+    for entity in message.entities:
+        if entity.type in allowed_entity_types:
+            deleted_entities.append(entity.type)  # Track deleted entities
+        else:
+            return  # Skip processing if message contains entities not in allowed_entity_types
+
+    if deleted_entities:
+        # Construct formatted log message with specific information
+        log_message = (
+            f"#message_delete 🗑\n\n"
+            f"● Chat id: <code>{grp_id}</code>\n"
+            f"● Chat: @{message.chat.username}\n"
+            f"● Chat title: {title}\n\n"
+            f"● User id: <code>{user_id}</code>\n"
+            f"● User: @{message.from_user.username}\n\n"
+            f"● Text: {message.text}"
+        )
+        for entity_type in deleted_entities:
+            log_message += f"\n\n● Entity Type: {entity_type}"
+
+        try:
+            # Delete the message, handling potential exceptions
+            await message.delete()
+            await client.send_message(LOG_CHANNEL, log_message)
+        except MessageDeleteForbidden:
+            logging.error("Permission denied to delete message")
+        except Exception as e:
+            logging.error(f"Error deleting message: {e}")
+
+        return True  # Indicate that the message was processed and deleted
+    return False
+
 async def auto_filter(client, msg, spoll=False):
     reqstr1 = msg.from_user.id if msg.from_user else 0
     reqstr = await client.get_users(reqstr1)
@@ -1855,7 +1888,7 @@ async def auto_filter(client, msg, spoll=False):
                 await message.delete()
         except Exception as e:
             logger.exception(e)
-            fek = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn))
+            fek = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn))
             try:
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
@@ -1867,7 +1900,7 @@ async def auto_filter(client, msg, spoll=False):
                 await fek.delete()
                 await message.delete()
     else:
-        fuk = await message.reply_photo(photo=NOR_IMG, caption=cap, reply_markup=InlineKeyboardMarkup(btn))
+        fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn))
         try:
             if settings['auto_delete']:
                 await asyncio.sleep(600)
