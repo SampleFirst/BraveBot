@@ -1,7 +1,7 @@
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
-from info import ADMINS, LOG_CHANNEL, SUPPORT_CHAT, MELCOW_NEW_USERS, MELCOW_PIC, MELCOW_VID, CHNL_LNK, GRP_LNK
+from info import ADMINS, LOG_CHANNEL, SUPPORT_CHAT, MELCOW_NEW_USERS, MELCOW_PIC, MELCOW_VID, UPDATE_CHANNEL
 from database.users_chats_db import db
 from database.ia_filterdb import Media, Media2,  db as clientDB, db2 as clientDB2
 from utils import get_size, temp, get_settings
@@ -30,7 +30,7 @@ async def save_group(bot, message):
             
         if message.chat.id in temp.BANNED_CHATS:
             buttons = [[
-                InlineKeyboardButton('Support', url=GRP_LNK)
+                InlineKeyboardButton('Support', url=SUPPORT_CHAT)
             ]]
             reply_markup = InlineKeyboardMarkup(buttons)
             message_text = '<b>CHAT NOT ALLOWED 🐞\n\nMy admins have restricted me from working here! If you want to know more about it, contact support.</b>'
@@ -78,8 +78,8 @@ async def save_group(bot, message):
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton('Support Group', url=GRP_LNK),
-                                InlineKeyboardButton('Updates Channel', url=CHNL_LNK)
+                                InlineKeyboardButton('Support Group', url=SUPPORT_CHAT),
+                                InlineKeyboardButton('Updates Channel', url=UPDATE_CHANNEL)
                             ]
                         ]
                     ),
@@ -169,7 +169,7 @@ async def leave_a_chat(bot, message):
         chat = chat
     try:
         buttons = [[
-            InlineKeyboardButton('Support', url=f'https://t.me/{SUPPORT_CHAT}')
+            InlineKeyboardButton('Support', url=SUPPORT_CHAT)
         ]]
         reply_markup=InlineKeyboardMarkup(buttons)
         await bot.send_message(
@@ -209,7 +209,7 @@ async def disable_chat(bot, message):
     await message.reply('Chat Successfully Disabled')
     try:
         buttons = [[
-            InlineKeyboardButton('Support', url=f'https://t.me/{SUPPORT_CHAT}')
+            InlineKeyboardButton('Support', url=SUPPORT_CHAT)
         ]]
         reply_markup=InlineKeyboardMarkup(buttons)
         await bot.send_message(
