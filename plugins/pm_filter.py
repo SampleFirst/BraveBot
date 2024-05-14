@@ -1720,7 +1720,16 @@ async def auto_filter(client, msg, spoll=False):
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
-    if ENABLE_SHORTLINK and settings["button"]:
+    if IS_VERIFY and not await check_verification(client, message.from_user.id):
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version"
+                ),
+            ]
+            for file in files
+        ]
+    elif ENABLE_SHORTLINK and settings["button"]:
         btn = [
             [
                 InlineKeyboardButton(
