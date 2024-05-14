@@ -1724,7 +1724,7 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version"
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-message.from_user.id-file.file_id"
                 ),
             ]
             for file in files
