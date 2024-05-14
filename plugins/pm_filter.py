@@ -13,7 +13,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidD
 from Script import script
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
-from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, SUPPORT_CHAT_ID, FILE_FORWARD, FILE_CHANNEL, CUSTOM_FILE_CAPTION, MSG_ALRT, PICS, GRP_LNK, CHNL_LNK, NOR_IMG, LOG_CHANNEL, SPELL_IMG, MAX_B_TN, \
+from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, SUPPORT_CHAT_ID, FILE_FORWARD, FILE_CHANNEL, CUSTOM_FILE_CAPTION, MSG_ALRT, PICS, SUPPORT_CHAT, UPDATE_CHANNEL, NOR_IMG, LOG_CHANNEL, SPELL_IMG, MAX_B_TN, \
     NO_RESULTS_MSG, IS_VERIFY, HOW_TO_VERIFY
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
 from pyrogram import Client, filters, enums
@@ -774,7 +774,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                             reply_markup=InlineKeyboardMarkup(
                                 [
                                     [
-                                        InlineKeyboardButton("Update Channel", url=CHNL_LNK)
+                                        InlineKeyboardButton("Update Channel", url=UPDATE_CHANNEL)
                                     ],
                                     [
                                         InlineKeyboardButton(f'Hindi', 'hin'),
@@ -874,7 +874,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("Update Channel", url=CHNL_LNK)
+                        InlineKeyboardButton("Update Channel", url=UPDATE_CHANNEL)
                     ],
                     [
                         InlineKeyboardButton(f'Hindi', 'hin'),
@@ -1255,7 +1255,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             ],
             [
                 InlineKeyboardButton('🔍 Search', switch_inline_query_current_chat=''),
-                InlineKeyboardButton('🤖 Updates', url=CHNL_LNK)
+                InlineKeyboardButton('🤖 Updates', url=UPDATE_CHANNEL)
             ],
             [
                 InlineKeyboardButton('ℹ️ Help', callback_data='help'),
@@ -1338,7 +1338,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
     elif query.data == "about":
         buttons = [[
-            InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
+            InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=SUPPORT_CHAT),
             InlineKeyboardButton('Sᴏᴜʀᴄᴇ Cᴏᴅᴇ', callback_data='source')
         ],[
             InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
