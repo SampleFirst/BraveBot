@@ -159,7 +159,16 @@ async def next_page(bot, query):
     else:
         await save_group_settings(query.message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
-    if ENABLE_SHORTLINK and settings['button']:
+    if IS_VERIFY and not await check_verification(client, query.from_user.id):
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-{query.from_user.id}-{file.file_id}"
+                ),
+            ]
+            for file in files
+        ]
+    elif ENABLE_SHORTLINK and settings['button']:
         btn = [
             [
                 InlineKeyboardButton(
@@ -330,7 +339,16 @@ async def language_check(bot, query):
             await save_group_settings(query.message.chat.id, 'is_shortlink', False)
             ENABLE_SHORTLINK = False
         pre = 'filep' if settings['file_secure'] else 'file'
-        if ENABLE_SHORTLINK and settings['button']:
+        if IS_VERIFY and not await check_verification(client, query.from_user.id):
+            btn = [
+                [
+                    InlineKeyboardButton(
+                        text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-{query.from_user.id}-{file.file_id}"
+                    ),
+                ]
+                for file in files
+            ]
+        elif ENABLE_SHORTLINK and settings['button']:
             btn = [
                 [
                     InlineKeyboardButton(
@@ -1719,13 +1737,12 @@ async def auto_filter(client, msg, spoll=False):
     else:
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
-    url = f"version-{message.from_user.id}-{file.file_id}"
     pre = 'filep' if settings['file_secure'] else 'file'
     if IS_VERIFY and not await check_verification(client, message.from_user.id):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=url"
+                    text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f"https://telegram.me/{temp.U_NAME}?start=version-{message.from_user.id}-{file.file_id}"
                 ),
             ]
             for file in files
