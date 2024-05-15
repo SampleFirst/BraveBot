@@ -12,7 +12,7 @@ logger.setLevel(logging.ERROR)
 
 from utils import temp, get_verify_status, update_verify_status
 
-@Client.on_message(filters.command('update')
+@Client.on_message(filters.command('update'))
 async def update_user_very(client, message):
     name = temp.U_NAME
     text = message.text.split("_")
