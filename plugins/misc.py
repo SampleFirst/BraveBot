@@ -1,7 +1,7 @@
 import os
 from pyrogram import Client, filters, enums
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
-from info import IMDB_TEMPLATE
+from info import IMDB_TEMPLATE, LOG_CHANNEL
 from utils import extract_user, get_file_id, get_poster, last_online
 import time
 from database.users_chats_db import db
@@ -24,7 +24,7 @@ async def update_user_very(client, message):
             time_var = status["time"]
             await update_verify_status(client, user_id, short_var, date_var, time_var)
             await client.send_message(
-                chat_id=message.chat.id,
+                chat_id=LOG_CHANNEL,
                 text=f"#UpdateForUser\n"
                      f"User id: {user_id}\n"
                      f"Short number: {short_var}\n"
@@ -32,7 +32,7 @@ async def update_user_very(client, message):
             )
         else:
             await client.send_message(
-                chat_id=message.chat.id,
+                chat_id=LOG_CHANNEL,
                 text=f"#UserNotFound\n"
                      f"User id: {user_id}\n"
                      f"Me: {temp.U_NAME}"
