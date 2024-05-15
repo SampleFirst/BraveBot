@@ -685,6 +685,7 @@ async def get_token(bot, userid, link, fileid):
         vr_num = short_num + 1
     short_verify = await get_verify_shorted_link_first(vr_num, url)
     short_verify_url = await get_verify_shorted_link_second(vr_num, short_verify)
+    print(vr_num)
     URLINK[user.id] = short_verify_url
     return str(short_verify_url)
     
