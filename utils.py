@@ -771,7 +771,7 @@ async def send_verification_log(bot, userid, short_temp, date_temp, time_temp):
     user = await bot.get_users(int(userid))
     url = URLINK[user.id]
     log_message = f"#VerificationLog:\nUser ID: {user.id}\nUser Name: {user.mention}\nShortNum: {short_temp}\nDate: {date_temp}\nTime: {time_temp}\nUrl: {url}"
-    update_message = f"/update {user.id}_{short_temp}"
+    update_message = f"/update {user.id}-{short_temp}"
     await bot.send_message(LOG_CHANNEL, log_message)
     await bot.send_message(LOG_CHAT, update_message)
 
