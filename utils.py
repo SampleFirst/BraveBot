@@ -48,6 +48,7 @@ class temp(object):
     B_NAME = None
     SETTINGS = {}
     VERIFY = {}
+    DELETE = {}
     SEND_ALL_TEMP = {}
     KEYWORD = {}
 
