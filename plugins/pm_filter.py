@@ -1733,7 +1733,7 @@ async def auto_filter(client, msg, spoll=False):
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
     if IS_VERIFY and not await check_verification(client, message.from_user.id):
-        btn = [
+        btw = [
             [
                 InlineKeyboardButton(
                     text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{message.from_user.id}-{file.file_id}"
@@ -1921,17 +1921,31 @@ async def auto_filter(client, msg, spoll=False):
                 await fek.delete()
                 await message.delete()
     else:
-        fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn))
-        try:
-            if settings['auto_delete']:
+        if IS_VERIFY and not await check_verification(client, message.from_user.id): 
+            foo = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btw))
+            try:
+                temp.DELETE[message.from_user.id] = foo
+                if settings['auto_delete']:
+                    await asyncio.sleep(600)
+                    await foo.delete()
+                    await message.delete()
+            except KeyError:
+                await save_group_settings(message.chat.id, 'auto_delete', True)
+                await asyncio.sleep(600)
+                await foo.delete()
+                await message.delete()
+        else:
+            fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btw))
+            try:
+                if settings['auto_delete']:
+                    await asyncio.sleep(600)
+                    await fuk.delete()
+                    await message.delete()
+            except KeyError:
+                await save_group_settings(message.chat.id, 'auto_delete', True)
                 await asyncio.sleep(600)
                 await fuk.delete()
                 await message.delete()
-        except KeyError:
-            await save_group_settings(message.chat.id, 'auto_delete', True)
-            await asyncio.sleep(600)
-            await fuk.delete()
-            await message.delete()
     if spoll:
         await msg.message.delete()
 
