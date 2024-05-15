@@ -11,23 +11,30 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
-from utils import temp, get_verify_status, update_verify_status
+from utils import temp, get_verify_status, update_similer_status
 
 @Client.on_message(filters.command('update'))
 async def update_user_very(client, message):
     text = message.text.split()
+    tz = pytz.timezone('Asia/Kolkata')
+    date_pack = datetime.now(tz)
+    pack_time = date_pack.strftime("%H:%M:%S")
+    datevar, timevar = str(date_pack).split(" ")
     if len(text) == 2:
         user_id, short_var = text[1].split('-')
         if await db.is_user_exist(user_id):
             status = await get_verify_status(user_id)
             date_var = status["date"]
             time_var = status["time"]
-            await update_verify_status(client, user_id, short_var, date_var, time_var)
+            await update_similer_status(client, user_id, short_var, date_var, time_var)
             await client.send_message(
                 chat_id=LOG_CHANNEL,
                 text=f"#UpdateForUser\n"
                      f"User id: {user_id}\n"
+                     f"User Name: {user.mention}\n"
                      f"Short number: {short_var}\n"
+                     f"Date: {datever}\n"
+                     f"Time: {timever}\n"
                      f"Me: {temp.U_NAME}."
             )
         else:
