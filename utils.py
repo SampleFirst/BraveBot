@@ -679,10 +679,10 @@ async def get_token(bot, userid, link, fileid):
     hour, minute, second = curr_time.split(" ")[1].split(":")
     curr_datetime = datetime(year=int(year), month=int(month), day=int(day))
     short_num = int(short_var)
-    if curr_datetime == last_datetime and short_num != 4:
-        vr_num = short_num + 1
-    else:
+    if short_num == 4:
         vr_num = 1
+    else:
+        vr_num = short_num + 1
     short_verify = await get_verify_shorted_link_first(vr_num, url)
     short_verify_url = await get_verify_shorted_link_second(vr_num, short_verify)
     URLINK[user.id] = short_verify_url
