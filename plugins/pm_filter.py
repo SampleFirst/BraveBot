@@ -1733,7 +1733,7 @@ async def auto_filter(client, msg, spoll=False):
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
     if IS_VERIFY and not await check_verification(client, message.from_user.id):
-        btw = [
+        btn = [
             [
                 InlineKeyboardButton(
                     text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{message.from_user.id}-{file.file_id}"
@@ -1884,6 +1884,7 @@ async def auto_filter(client, msg, spoll=False):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             try:
+                temp.DELETE[message.from_user.id] = hehe
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
                     await hehe.delete()
@@ -1898,6 +1899,7 @@ async def auto_filter(client, msg, spoll=False):
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
             hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             try:
+                temp.DELETE[message.from_user.id] = hmm
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
                     await hmm.delete()
@@ -1911,6 +1913,7 @@ async def auto_filter(client, msg, spoll=False):
             logger.exception(e)
             fek = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn))
             try:
+                temp.DELETE[message.from_user.id] = fek
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
                     await fek.delete()
@@ -1921,31 +1924,18 @@ async def auto_filter(client, msg, spoll=False):
                 await fek.delete()
                 await message.delete()
     else:
-        if IS_VERIFY and not await check_verification(client, message.from_user.id): 
-            foo = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btw))
-            try:
-                temp.DELETE[message.from_user.id] = foo
-                if settings['auto_delete']:
-                    await asyncio.sleep(600)
-                    await foo.delete()
-                    await message.delete()
-            except KeyError:
-                await save_group_settings(message.chat.id, 'auto_delete', True)
-                await asyncio.sleep(600)
-                await foo.delete()
-                await message.delete()
-        else:
-            fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btw))
-            try:
-                if settings['auto_delete']:
-                    await asyncio.sleep(600)
-                    await fuk.delete()
-                    await message.delete()
-            except KeyError:
-                await save_group_settings(message.chat.id, 'auto_delete', True)
+        fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn))
+        try:
+            temp.DELETE[message.from_user.id] = foo
+            if settings['auto_delete']:
                 await asyncio.sleep(600)
                 await fuk.delete()
                 await message.delete()
+        except KeyError:
+            await save_group_settings(message.chat.id, 'auto_delete', True)
+            await asyncio.sleep(600)
+            await fuk.delete()
+            await message.delete()
     if spoll:
         await msg.message.delete()
 
