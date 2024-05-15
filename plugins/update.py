@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from info import ADMINS 
 from utils import temp, get_verify_status, update_verify_status
 
-@Client.on_message(filters.command("update") & filters.user(ADMINS))
+@Client.on_message(filters.command("update")
 async def update_user(client, message):
     name = temp.U_NAME
     text = message.text.split("_")
