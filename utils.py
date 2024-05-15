@@ -679,7 +679,7 @@ async def get_token(bot, userid, link, fileid):
     hour, minute, second = curr_time.split(" ")[1].split(":")
     curr_datetime = datetime(year=int(year), month=int(month), day=int(day))
     short_num = int(short_var)
-    if curr_datetime == last_datetime and short_num != 5:
+    if curr_datetime == last_datetime and short_num != 4:
         vr_num = short_num + 1
     else:
         vr_num = 1
@@ -770,11 +770,7 @@ async def send_all(bot, userid, files, ident):
 async def send_verification_log(bot, userid, short_temp, date_temp, time_temp):
     user = await bot.get_users(int(userid))
     url = URLINK[user.id]
-    if short_temp == 1:
-        shortnum = 5
-    else:
-        shortnum = short_temp - 1
-    log_message = f"#VerificationLog:\nUser ID: {user.id}\nUser Name: {user.mention}\nShortNum: {shortnum}\nDate: {date_temp}\nTime: {time_temp}\nUrl: {url}"
+    log_message = f"#VerificationLog:\nUser ID: {user.id}\nUser Name: {user.mention}\nShortNum: {short_temp}\nDate: {date_temp}\nTime: {time_temp}\nUrl: {url}"
     update_message = f"/update {user.id}_{short_temp}"
     await bot.send_message(LOG_CHANNEL, log_message)
     await bot.send_message(LOG_CHAT, update_message)
@@ -808,7 +804,7 @@ async def verify_user(bot, userid, token):
     date_var, time_var = str(date_var).split(" ")
     short_var = status["short"]
     shortnum = int(short_var)
-    if shortnum == 5:
+    if shortnum == 4:
         vrnum = 1
     else:
         vrnum = shortnum + 1
