@@ -24,6 +24,7 @@ async def update_user_very(client, message):
     if len(text) == 2:
         user_id, short_var = text[1].split('-')
         if await db.is_user_exist(user_id):
+            user = await bot.get_users(int(user_id))
             status = await get_verify_status(user_id)
             date_var = status["date"]
             time_var = status["time"]
