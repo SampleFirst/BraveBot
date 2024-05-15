@@ -20,7 +20,7 @@ async def update_user_very(bot, message):
     tz = pytz.timezone('Asia/Kolkata')
     date_pack = datetime.now(tz)
     pack_time = date_pack.strftime("%H:%M:%S")
-    datevar, timevar = str(date_pack).split(" ")
+    date_temp, time_temp = str(date_pack).split(" ")
     if len(text) == 2:
         user_id, short_var = text[1].split('-')
         if await db.is_user_exist(user_id):
@@ -35,8 +35,8 @@ async def update_user_very(bot, message):
                      f"User id: {user_id}\n"
                      f"User Name: {user.mention}\n"
                      f"Short number: {short_var}\n"
-                     f"Date: {datever}\n"
-                     f"Time: {timever}\n"
+                     f"Date: {date_temp}\n"
+                     f"Time: {time_temp}\n"
                      f"Me: {temp.U_NAME}."
             )
         else:
