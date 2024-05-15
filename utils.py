@@ -782,6 +782,14 @@ async def get_verify_status(userid):
         temp.VERIFY[userid] = status
     return status
     
+async def update_similer_status(bot, userid, short_temp, date_temp, time_temp):
+    status = await get_verify_status(userid)
+    status["short"] = short_temp
+    status["date"] = date_temp
+    status["time"] = time_temp
+    temp.VERIFY[userid] = status
+    await db.update_verification(userid, short_temp, date_temp, time_temp)
+    
 async def update_verify_status(bot, userid, short_temp, date_temp, time_temp):
     status = await get_verify_status(userid)
     status["short"] = short_temp
