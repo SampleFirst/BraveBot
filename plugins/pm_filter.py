@@ -1884,7 +1884,6 @@ async def auto_filter(client, msg, spoll=False):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             try:
-                temp.DELETE[message.from_user.id] = hehe
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
                     await hehe.delete()
@@ -1899,7 +1898,6 @@ async def auto_filter(client, msg, spoll=False):
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
             hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             try:
-                temp.DELETE[message.from_user.id] = hmm
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
                     await hmm.delete()
@@ -1913,7 +1911,6 @@ async def auto_filter(client, msg, spoll=False):
             logger.exception(e)
             fek = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn))
             try:
-                temp.DELETE[message.from_user.id] = fek
                 if settings['auto_delete']:
                     await asyncio.sleep(600)
                     await fek.delete()
@@ -1926,7 +1923,6 @@ async def auto_filter(client, msg, spoll=False):
     else:
         fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn))
         try:
-            temp.DELETE[message.from_user.id] = fuk
             if settings['auto_delete']:
                 await asyncio.sleep(600)
                 await fuk.delete()
