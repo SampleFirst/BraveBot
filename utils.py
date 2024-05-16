@@ -817,7 +817,7 @@ async def verify_user(bot, userid, token):
         date_var = datetime.now(tz)
         temp_time = date_var.strftime("%H:%M:%S")
         date_var, time_var = str(date_var).split(" ")
-    await update_special_verify_status(bot, user.id, vrnum, date_var, temp_time)
+    await update_verify_status(bot, user.id, vrnum, date_var, temp_time)
 
 
 async def check_verification(bot, userid):
