@@ -255,7 +255,7 @@ async def start(client, message):
                 parse_mode=enums.ParseMode.HTML,
                 reply_markup=InlineKeyboardMarkup(btn)
             )
-            temp.STORE_ID[user_id] = msg.id
+            temp.STORE_ID[userid] = msg.id
             return
         else:
             btn = [[
@@ -302,7 +302,7 @@ async def start(client, message):
                     ]
                 ]
                 
-                msg_id = temp.STORE_ID.get(user_id)
+                msg_id = temp.STORE_ID.get(userid)
                 msg = await client.get_messages(message.chat.id, msg_id)
                 await msg.edit_text(
                     text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
