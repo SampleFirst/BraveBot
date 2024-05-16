@@ -274,49 +274,60 @@ async def start(client, message):
         userid = data.split("-", 2)[1]
         token = data.split("-", 3)[2]
         fileid = data.split("-", 3)[3]
+        
         if str(message.from_user.id) != str(userid):
             return await message.reply_text(
-                text="<b>Iɴᴠᴀʟɪᴅ ʟɪɴᴋ ᴏʀ Exᴘɪʀᴇᴅ ʟɪɴᴋ !</b>",
+                text="<b>Invalid or Expired Link!</b>",
                 protect_content=True if PROTECT_CONTENT else False
             )
+        
         is_valid = await check_token(client, userid, token)
-        if is_valid == True:
+        
+        if is_valid:
             if IS_VERIFY and not await check_verification(client, userid):
                 status = await get_verify_status(userid)
                 short_var = status["short"]
                 shortnum = int(short_var)
+                
                 if shortnum == 4:
                     vrnum = 2
                 else:
                     vrnum = shortnum + 1
+                
                 await verify_user(client, userid, token, shortnum)
-                btn = [[
-                    InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
-                    InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
-                ]]
+                btn = [
+                    [
+                        InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
+                        InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
+                    ]
+                ]
+                
                 msg_id = temp.STORE_ID.get(user_id)
                 msg = await client.get_messages(message.chat.id, msg_id)
-                    await msg.edit_text(
-                        text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
-                        disable_web_page_preview=True,
-                        parse_mode=enums.ParseMode.HTML,
-                        reply_markup=InlineKeyboardMarkup(btn)
-                    )
+                await msg.edit_text(
+                    text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
+                    disable_web_page_preview=True,
+                    parse_mode=enums.ParseMode.HTML,
+                    reply_markup=InlineKeyboardMarkup(btn)
+                )
                 return
             else:
                 await verify_user(client, userid, token, shortnum)
-                btn = [[
-                    InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
-                ]]
+                btn = [
+                    [
+                        InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
+                    ]
+                ]
+                
                 await message.reply_text(
-                    text=f"<b>Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ ᴠᴇʀɪғɪᴇᴅ !\nNᴏᴡ ʏᴏᴜ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇss ғᴏʀ ᴀʟʟ ᴍᴏᴠɪᴇs ᴛɪʟʟ ᴛʜᴇ ɴᴇxᴛ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ᴡʜɪᴄʜ ɪs ᴀғᴛᴇʀ 5 ʜᴏᴜʀs ғʀᴏᴍ ɴᴏᴡ.</b>",
+                    text=f"<b>Hey {message.from_user.mention}, You are successfully verified!\nNow you have unlimited access for all movies till the next verification which is after 5 hours from now.</b>",
                     protect_content=True if PROTECT_CONTENT else False,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
                 return
         else:
             return await message.reply_text(
-                text="<b>Iɴᴠᴀʟɪᴅ ʟɪɴᴋ ᴏʀ Exᴘɪʀᴇᴅ ʟɪɴᴋ !</b>",
+                text="<b>Invalid or Expired Link!</b>",
                 protect_content=True if PROTECT_CONTENT else False
             )
 
