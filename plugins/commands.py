@@ -294,7 +294,7 @@ async def start(client, message):
                 else:
                     vrnum = shortnum + 1
                 
-                await verify_user(client, userid, token, shortnum)
+                await verify_user(client, userid, token)
                 btn = [
                     [
                         InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
@@ -312,7 +312,7 @@ async def start(client, message):
                 )
                 return
             else:
-                await verify_user(client, userid, token, shortnum)
+                await verify_user(client, userid, token)
                 btn = [
                     [
                         InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
