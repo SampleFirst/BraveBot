@@ -236,7 +236,7 @@ async def start(client, message):
     elif data.split("-", 1)[0] == "version":
         userid = data.split("-", 2)[1]
         fileid = data.split("-", 2)[2]
-        if IS_VERIFY and not await check_verification(client, message.from_user.id):
+        if IS_VERIFY and not await check_verification(client, userid):
             btn = [[
                 InlineKeyboardButton("Verify", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                 InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
