@@ -671,21 +671,18 @@ async def get_token(bot, userid, link, fileid):
     time_var = status["time"]
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
-    last_datetime = datetime(year=int(year), month=int(month), day=int(day))
+    last_datetime = datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))
     tz = pytz.timezone('Asia/Kolkata')
-    curr_date = datetime.now(tz)
-    curr_time = curr_date.strftime("%Y-%m-%d %H:%M:%S")
-    year, month, day = curr_time.split(" ")[0].split("-")
-    hour, minute, second = curr_time.split(" ")[1].split(":")
-    curr_datetime = datetime(year=int(year), month=int(month), day=int(day))
+    last_datetime = tz.localize(last_datetime)
+    curr_datetime = datetime.now(tz)
     short_num = int(short_var)
-    if short_num == 4:
+    diff = curr_datetime - last_datetime
+    if diff.total_seconds() > 86400 or short_num == 4:  # 24 hours in seconds or short_num is 4
         vr_num = 1
     else:
-        vr_num = short_num + 1
+        vr_num = short_num + 1 if short_num < 4 else 1
     short_verify = await get_verify_shorted_link_first(vr_num, url)
     short_verify_url = await get_verify_shorted_link_second(vr_num, short_verify)
-    print(vr_num)
     URLINK[user.id] = short_verify_url
     return str(short_verify_url)
     
