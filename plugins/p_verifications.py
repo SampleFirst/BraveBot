@@ -65,16 +65,16 @@ async def update_users_verifications(client, message):
     await sts.edit(f"All users updated with default verification status.\nTime taken: {time_taken}")
 
 
-@Client.on_message(filters.command("update_users"))
-async def update_users(client, message):
+@Client.on_message(filters.command("update_user"))
+async def update_user(client, message):
     start_time = time.time()
-    sts = await message.reply_text('Updating users...')
+    sts = await message.reply_text('Updating user...')
     userid = message.from_user.id
     try:
         short_temp = "4"
         date_temp = "1999-12-31"
         time_temp = "23:59:59"
-        await db.update_verification(user_id, short_temp, date_temp, time_temp)
+        await db.update_verification(userid, short_temp, date_temp, time_temp)
         
         time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
         await sts.edit(f"All users updated with default verification status.\nTime taken: {time_taken}")
