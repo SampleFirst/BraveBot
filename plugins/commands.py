@@ -237,8 +237,15 @@ async def start(client, message):
         userid = data.split("-", 2)[1]
         fileid = data.split("-", 2)[2]
         if IS_VERIFY and not await check_verification(client, userid):
+            status = await get_verify_status(user.id)
+            short_var = status["short"]
+            shortnum = int(short_var)
+            if shortnum == 4:
+                vrnum = 1
+            else:
+                vrnum = shortnum + 1
             btn = [[
-                InlineKeyboardButton("Verify 1", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
+                InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                 InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
             ]]
             await client.send_message(
@@ -271,9 +278,28 @@ async def start(client, message):
             )
         is_valid = await check_token(client, userid, token)
         if is_valid == True:
-            if fileid == "send_all":
+            if IS_VERIFY and not await check_verification(client, userid):
+                status = await get_verify_status(user.id)
+                short_var = status["short"]
+                shortnum = int(short_var)
+                if shortnum == 4:
+                    vrnum = 1
+                else:
+                    vrnum = shortnum + 1
                 btn = [[
-                    InlineKeyboardButton("Gᴇᴛ Fɪʟᴇ", callback_data=f"checksub#send_all")
+                    InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
+                    InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
+                ]]
+                await client.send_message(
+                    chat_id=userid,
+                    text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
+                    disable_web_page_preview=True,
+                    parse_mode=enums.ParseMode.HTML,
+                    reply_markup=InlineKeyboardMarkup(btn)
+                )
+            else:
+                btn = [[
+                    InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
                 ]]
                 await verify_user(client, userid, token)
                 await message.reply_text(
@@ -282,16 +308,6 @@ async def start(client, message):
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
                 return
-            btn = [[
-                InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
-            ]]
-            await message.reply_text(
-                text=f"<b>Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ ᴠᴇʀɪғɪᴇᴅ !\nNᴏᴡ ʏᴏᴜ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇss ғᴏʀ ᴀʟʟ ᴍᴏᴠɪᴇs ᴛɪʟʟ ᴛʜᴇ ɴᴇxᴛ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ᴡʜɪᴄʜ ɪs ᴀғᴛᴇʀ 5 ʜᴏᴜʀs ғʀᴏᴍ ɴᴏᴡ.</b>",
-                protect_content=True if PROTECT_CONTENT else False,
-                reply_markup=InlineKeyboardMarkup(btn)
-            )
-            await verify_user(client, userid, token)
-            return
         else:
             return await message.reply_text(
                 text="<b>Iɴᴠᴀʟɪᴅ ʟɪɴᴋ ᴏʀ Exᴘɪʀᴇᴅ ʟɪɴᴋ !</b>",
