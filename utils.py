@@ -808,15 +808,16 @@ async def verify_user(bot, userid, token):
     TOKENS[user.id] = {token: True}
     status = await get_verify_status(user.id)
     tz = pytz.timezone('Asia/Kolkata')
-    date_var = datetime.now(tz)+timedelta(hours=6)
-    temp_time = date_var.strftime("%H:%M:%S")
-    date_var, time_var = str(date_var).split(" ")
     short_var = status["short"]
     shortnum = int(short_var)
     if shortnum == 4:
         vrnum = 1
+        date_var = datetime.now(tz)+timedelta(hours=24)
     else:
         vrnum = shortnum + 1
+        date_var = datetime.now(tz)
+    temp_time = date_var.strftime("%H:%M:%S")
+    date_var, time_var = str(date_var).split(" ")
     await update_verify_status(bot, user.id, vrnum, date_var, temp_time)
 
 async def check_verification(bot, userid):
