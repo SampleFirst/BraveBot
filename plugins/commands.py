@@ -297,11 +297,11 @@ async def start(client, message):
                 msg_id = temp.STORE_ID.get(user_id)
                 msg = await client.get_messages(message.chat.id, msg_id)
                     await msg.edit_text(
-                    text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
-                    disable_web_page_preview=True,
-                    parse_mode=enums.ParseMode.HTML,
-                    reply_markup=InlineKeyboardMarkup(btn)
-                )
+                        text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
+                        disable_web_page_preview=True,
+                        parse_mode=enums.ParseMode.HTML,
+                        reply_markup=InlineKeyboardMarkup(btn)
+                    )
                 return
             else:
                 await verify_user(client, userid, token, shortnum)
