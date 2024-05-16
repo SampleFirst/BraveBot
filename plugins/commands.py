@@ -237,7 +237,7 @@ async def start(client, message):
         userid = data.split("-", 2)[1]
         fileid = data.split("-", 2)[2]
         if IS_VERIFY and not await check_verification(client, userid):
-            status = await get_verify_status(user.id)
+            status = await get_verify_status(userid)
             short_var = status["short"]
             shortnum = int(short_var)
             if shortnum == 4:
