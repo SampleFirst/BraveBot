@@ -48,7 +48,7 @@ class temp(object):
     B_NAME = None
     SETTINGS = {}
     VERIFY = {}
-    DELETE = {}
+    STORE_ID = {}
     SEND_ALL_TEMP = {}
     KEYWORD = {}
 
