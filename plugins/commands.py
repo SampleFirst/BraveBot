@@ -248,13 +248,15 @@ async def start(client, message):
                 InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                 InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
             ]]
-            await client.send_message(
+            msg = await client.send_message(
                 chat_id=userid,
                 text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
                 disable_web_page_preview=True,
                 parse_mode=enums.ParseMode.HTML,
                 reply_markup=InlineKeyboardMarkup(btn)
             )
+            temp.STORE_ID[user_id] = msg.id
+            return
         else:
             btn = [[
                 InlineKeyboardButton("Search Group", url="https://t.me/+xxOQC_aibFNlOWY1")
@@ -266,6 +268,7 @@ async def start(client, message):
                 parse_mode=enums.ParseMode.HTML,
                 reply_markup=InlineKeyboardMarkup(btn)
             )
+            return
                                      
     elif data.split("-", 1)[0] == "verify":
         userid = data.split("-", 2)[1]
@@ -286,23 +289,25 @@ async def start(client, message):
                     vrnum = 2
                 else:
                     vrnum = shortnum + 1
+                await verify_user(client, userid, token, shortnum)
                 btn = [[
                     InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                     InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                 ]]
-                await verify_user(client, userid, token, shortnum)
-                await client.send_message(
-                    chat_id=userid,
+                msg_id = temp.STORE_ID.get(user_id)
+                msg = await client.get_messages(message.chat.id, msg_id)
+                    await msg.edit_text(
                     text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
                     disable_web_page_preview=True,
                     parse_mode=enums.ParseMode.HTML,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
+                return
             else:
+                await verify_user(client, userid, token, shortnum)
                 btn = [[
                     InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
                 ]]
-                await verify_user(client, userid, token)
                 await message.reply_text(
                     text=f"<b>Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ ᴠᴇʀɪғɪᴇᴅ !\nNᴏᴡ ʏᴏᴜ ʜᴀᴠᴇ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇss ғᴏʀ ᴀʟʟ ᴍᴏᴠɪᴇs ᴛɪʟʟ ᴛʜᴇ ɴᴇxᴛ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ᴡʜɪᴄʜ ɪs ᴀғᴛᴇʀ 5 ʜᴏᴜʀs ғʀᴏᴍ ɴᴏᴡ.</b>",
                     protect_content=True if PROTECT_CONTENT else False,
