@@ -290,7 +290,7 @@ async def start(client, message):
                     InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                     InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                 ]]
-                await verify_user(client, userid, token)
+                await verify_user(client, userid, token, shortnum)
                 await client.send_message(
                     chat_id=userid,
                     text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
