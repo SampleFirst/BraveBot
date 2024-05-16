@@ -283,13 +283,14 @@ async def start(client, message):
                 short_var = status["short"]
                 shortnum = int(short_var)
                 if shortnum == 4:
-                    vrnum = 1
+                    vrnum = 2
                 else:
                     vrnum = shortnum + 1
                 btn = [[
                     InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                     InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                 ]]
+                await verify_user(client, userid, token)
                 await client.send_message(
                     chat_id=userid,
                     text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
