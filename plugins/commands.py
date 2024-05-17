@@ -240,12 +240,8 @@ async def start(client, message):
             status = await get_verify_status(userid)
             short_var = status["short"]
             shortnum = int(short_var)
-            if shortnum == 4:
-                vrnum = 1
-            else:
-                vrnum = shortnum + 1
             btn = [[
-                InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
+                InlineKeyboardButton(f"Verify - {shortnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                 InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
             ]]
             msg = await client.send_message(
@@ -288,16 +284,10 @@ async def start(client, message):
                 status = await get_verify_status(userid)
                 short_var = status["short"]
                 shortnum = int(short_var)
-                
-                if shortnum == 4:
-                    vrnum = 2
-                else:
-                    vrnum = shortnum + 1
-                
                 await verify_user(client, userid, token)
                 btn = [
                     [
-                        InlineKeyboardButton(f"Verify - {vrnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
+                        InlineKeyboardButton(f"Verify - {shortnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
                         InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                     ]
                 ]
