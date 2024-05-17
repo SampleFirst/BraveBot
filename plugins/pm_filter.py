@@ -711,6 +711,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             alert = alert.replace("\\n", "\n").replace("\\t", "\t")
             await query.answer(alert, show_alert=True)
     if query.data.startswith("file"):
+        user_id = query.from_user.id
         clicked = query.from_user.id
         try:
             typed = query.message.reply_to_message.from_user.id
@@ -767,7 +768,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                 ]
                             )
                         )
-                        temp.STORE_ID[query.from_user.id] = abc.id
+                        temp.STORE_ID[user_id] = abc.id
                         xyz = await query.message.reply_text(
                             script.FILE_MSG.format(query.from_user.mention, title, size),
                             parse_mode=enums.ParseMode.HTML,
