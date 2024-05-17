@@ -7,6 +7,7 @@ import time
 import pytz
 from database.users_chats_db import db
 from datetime import datetime
+from datetime import datetime, timedelta, date, time
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 import logging
 logger = logging.getLogger(__name__)
@@ -25,10 +26,19 @@ async def update_user_very(bot, message):
         user_id, short_var = text[1].split('-')
         if await db.is_user_exist(user_id):
             user = await bot.get_users(int(user_id))
-            status = await get_verify_status(user_id)
-            date_var = status["date"]
-            time_var = status["time"]
-            await update_similer_status(bot, user_id, short_var, date_var, time_var)
+            status = await get_verify_status(user.id)
+            tz = pytz.timezone('Asia/Kolkata')
+            short_var = status["short"]
+            shortnum = int(short_var)
+            if shortnum == 4:
+                vrnum = 1
+                date_var = datetime.now(tz) + timedelta(hours=24)
+            else:
+                vrnum = shortnum + 1
+                date_var = datetime.now(tz) - timedelta(hours=25)
+            temp_time = date_var.strftime("%H:%M:%S")
+            date_var, time_var = str(date_var).split(" ")
+            await update_verify_status(bot, user.id, vrnum, date_var, temp_time)
             await bot.send_message(
                 chat_id=LOG_CHANNEL,
                 text=f"#UpdateForUser\n"
@@ -46,6 +56,28 @@ async def update_user_very(bot, message):
                      f"User id: {user_id}\n"
                      f"Me: {temp.U_NAME}"
             )
+            
+            
+async def verify_user(bot, userid, token):
+    user = await bot.get_users(int(userid))
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, user.first_name)
+        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention()))
+    TOKENS[user.id] = {token: True}
+    status = await get_verify_status(user.id)
+    tz = pytz.timezone('Asia/Kolkata')
+    short_var = status["short"]
+    shortnum = int(short_var)
+    if shortnum == 4:
+        vrnum = 1
+        date_var = datetime.now(tz) + timedelta(hours=24)
+    else:
+        vrnum = shortnum + 1
+        date_var = datetime.now(tz) - timedelta(hours=25)
+    temp_time = date_var.strftime("%H:%M:%S")
+    date_var, time_var = str(date_var).split(" ")
+    await update_verify_status(bot, user.id, vrnum, date_var, temp_time)
+
 
 @Client.on_message(filters.command('id'))
 async def showid(client, message):
