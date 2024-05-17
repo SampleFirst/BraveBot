@@ -768,7 +768,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                 ]
                             )
                         )
-                        temp.STORE_ID[user_id] = abc.id
                         xyz = await query.message.reply_text(
                             script.FILE_MSG.format(query.from_user.mention, title, size),
                             parse_mode=enums.ParseMode.HTML,
@@ -781,6 +780,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                 ]
                             )
                         )
+                        temp.STORE_ID[query.from_user.id] = abc.id
                         return await query.answer("Hey, You have not verified today. You have to verify to continue. Check my PM to verify and get files!", show_alert=True)
                     else:
                         file_send = await client.send_cached_media(
@@ -885,7 +885,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     ]
                 )
             )
-            temp.STORE_ID[query.from_user.id] = abc.id
             xyz = await query.message.reply_text(
                 script.FILE_MSG.format(query.from_user.mention, title, size),
                 parse_mode=enums.ParseMode.HTML,
@@ -898,6 +897,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     ]
                 )
             )
+            temp.STORE_ID[query.from_user.id] = abc.id
             return await query.answer("Hey, You have not verified today. You have to verify to continue. Check my PM to verify and get files!", show_alert=True)
         
         file_sendpm = await client.send_cached_media(
