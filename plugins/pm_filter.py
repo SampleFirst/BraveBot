@@ -753,10 +753,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             else:
                 if clicked == typed:
                     if IS_VERIFY and not await check_verification(client, query.from_user.id):
-                        abc = await client.send_message(
-                            chat_id=query.from_user.id,
-                            text="Start Verification!"
-                        )
                         msg = await client.send_message(
                             chat_id=query.from_user.id,
                             text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
@@ -770,11 +766,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                         InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                                     ]
                                 ]
-                            ),
-                            reply_to_message_id=abc.message.id
+                            )
                         )
-                        temp.STORE_ID[query.from_user.id] = msg.id
-                        print(msg.id)
                         xyz = await query.message.reply_text(
                             script.FILE_MSG.format(query.from_user.mention, title, size),
                             parse_mode=enums.ParseMode.HTML,
@@ -903,7 +896,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     ]
                 )
             )
-            temp.STORE_ID[query.from_user.id] = msg.id
             return await query.answer("Hey, You have not verified today. You have to verify to continue. Check my PM to verify and get files!", show_alert=True)
         
         file_sendpm = await client.send_cached_media(
