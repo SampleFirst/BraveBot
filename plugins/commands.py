@@ -276,9 +276,7 @@ async def start(client, message):
                 text="<b>Invalid or Expired Link!</b>",
                 protect_content=True if PROTECT_CONTENT else False
             )
-        
         is_valid = await check_token(client, userid, token)
-        
         if is_valid:
             if IS_VERIFY and not await check_verification(client, userid):
                 status = await get_verify_status(userid)
@@ -291,7 +289,6 @@ async def start(client, message):
                         InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                     ]
                 ]
-                
                 msg_id = temp.STORE_ID.get(userid)
                 msg = await client.get_messages(message.chat.id, msg_id)
                 await msg.edit_text(
@@ -308,7 +305,6 @@ async def start(client, message):
                         InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
                     ]
                 ]
-                
                 await message.reply_text(
                     text=f"<b>Hey {message.from_user.mention}, You are successfully verified!\nNow you have unlimited access for all movies till the next verification which is after 5 hours from now.</b>",
                     protect_content=True if PROTECT_CONTENT else False,
