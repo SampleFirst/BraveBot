@@ -1138,6 +1138,7 @@ async def verification(client, message):
     userid = message.from_user.id
 
     verify_status = await get_verify_status(userid)
+    last_short = verify_status["short"]
     expire_date = verify_status["date"]
     expire_time = verify_status["time"]
     
@@ -1149,8 +1150,7 @@ async def verification(client, message):
     
     if check_datetime > current_datetime:
         text = "Status: Verified ☑\n\n"
-        text += f"Verified Date: {check_datetime.date()}\n"
-        text += f"Verified Time: {check_datetime.time()}\n\n"
+        text += f"Verified Short: {last_short}\n"
         text += f"Expire Date: {expire_date}\n"
         text += f"Expire Time: {expire_time}\n\n"
     else:
