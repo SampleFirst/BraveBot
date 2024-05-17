@@ -1732,7 +1732,7 @@ async def auto_filter(client, msg, spoll=False):
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
-    if IS_VERIFY and not await check_verification(client, reqstr1):
+    if IS_VERIFY and not await check_verification(client, msg.from_user.id):
         btn = [
             [
                 InlineKeyboardButton(
