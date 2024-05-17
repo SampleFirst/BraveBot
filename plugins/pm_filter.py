@@ -752,17 +752,32 @@ async def cb_handler(client: Client, query: CallbackQuery):
             else:
                 if clicked == typed:
                     if IS_VERIFY and not await check_verification(client, query.from_user.id):
-                        btn = [[
-                            InlineKeyboardButton("Verify", url=await get_token(client, query.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)),
-                            InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
-                        ]]
-                        await client.send_message(
+                        abc = await client.send_message(
                             chat_id=query.from_user.id,
                             text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
                             protect_content=True if ident == 'checksubp' else False,
                             disable_web_page_preview=True,
                             parse_mode=enums.ParseMode.HTML,
-                            reply_markup=InlineKeyboardMarkup(btn)
+                            reply_markup=InlineKeyboardMarkup(
+                                [
+                                    [
+                                        InlineKeyboardButton("Verify", url=await get_token(client, query.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)),
+                                        InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
+                                    ]
+                                ]
+                            )
+                        )
+                        xyz = await query.message.reply_text(
+                            script.FILE_MSG.format(query.from_user.mention, title, size),
+                            parse_mode=enums.ParseMode.HTML,
+                            reply_markup=InlineKeyboardMarkup(
+                                [
+                                    [
+                                        InlineKeyboardButton('💎 Verify For 24 Hours', url=f"https://telegram.me/{temp.U_NAME}")
+                                    ]
+
+                                ]
+                            )
                         )
                         return await query.answer("Hey, You have not verified today. You have to verify to continue. Check my PM to verify and get files!", show_alert=True)
                     else:
@@ -853,19 +868,35 @@ async def cb_handler(client: Client, query: CallbackQuery):
             f_caption = f"{title}"
         await query.answer()
         if IS_VERIFY and not await check_verification(client, query.from_user.id):
-            btn = [[
-                InlineKeyboardButton("Verify", url=await get_token(client, query.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)),
-                InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
-            ]]
-            await client.send_message(
+            abc = await client.send_message(
                 chat_id=query.from_user.id,
-                text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
+                text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 24 hours from now!</b>",
                 protect_content=True if ident == 'checksubp' else False,
                 disable_web_page_preview=True,
                 parse_mode=enums.ParseMode.HTML,
-                reply_markup=InlineKeyboardMarkup(btn)
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton("Verify", url=await get_token(client, query.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)),
+                            InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
+                        ]
+                    ]
+                )
             )
-            return
+            xyz = await query.message.reply_text(
+                script.FILE_MSG.format(query.from_user.mention, title, size),
+                parse_mode=enums.ParseMode.HTML,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton('💎 Verify For 24 Hours', url=f"https://telegram.me/{temp.U_NAME}")
+                        ]
+
+                    ]
+                )
+            )
+            return await query.answer("Hey, You have not verified today. You have to verify to continue. Check my PM to verify and get files!", show_alert=True)
+        
         file_sendpm = await client.send_cached_media(
             chat_id=FILE_CHANNEL,
             file_id=file_id,
