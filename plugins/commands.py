@@ -257,12 +257,10 @@ async def start(client, message):
                         ]
                     ]
                     await verify_user(client, userid, token)
-                    abc_id = temp.STORE_ID.get(userid)
-                    abc = await client.get_messages(message.chat.id, abc_id)
-                    await abc.edit_text(
+                    msg_id = temp.STORE_ID.get(userid)
+                    msg = await client.get_messages(message.chat.id, msg_id)
+                    await msg.edit_text(
                         text=f"<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until {shortnum} 5 hours from now!</b>",
-                        disable_web_page_preview=True,
-                        parse_mode=enums.ParseMode.HTML,
                         reply_markup=InlineKeyboardMarkup(btn)
                     )
                     return
@@ -273,11 +271,10 @@ async def start(client, message):
                             InlineKeyboardButton("Get File", callback_data=f'files_#{fileid}')
                         ]
                     ]
-                    abc_id = temp.STORE_ID.get(userid)
-                    abc = await client.get_messages(message.chat.id, abc_id)
-                    await abc.edit_text(
+                    msg_id = temp.STORE_ID.get(userid)
+                    msg = await client.get_messages(message.chat.id, msg_id)
+                    await msg.edit_text(
                         text=f"<b>Hey {message.from_user.mention}, You are successfully verified!\nNow you have unlimited access for all movies till the next verification which is after 5 hours from now.</b>",
-                        protect_content=True if PROTECT_CONTENT else False,
                         reply_markup=InlineKeyboardMarkup(btn)
                     )
                     return
