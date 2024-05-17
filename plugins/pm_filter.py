@@ -767,6 +767,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                 ]
                             )
                         )
+                        temp.STORE_ID[query.from_user.id] = abc.id
                         xyz = await query.message.reply_text(
                             script.FILE_MSG.format(query.from_user.mention, title, size),
                             parse_mode=enums.ParseMode.HTML,
@@ -883,6 +884,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     ]
                 )
             )
+            temp.STORE_ID[query.from_user.id] = abc.id
             xyz = await query.message.reply_text(
                 script.FILE_MSG.format(query.from_user.mention, title, size),
                 parse_mode=enums.ParseMode.HTML,
