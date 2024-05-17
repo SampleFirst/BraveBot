@@ -59,24 +59,24 @@ HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/+IvrcMfPKCMxkNjVl")
 SHORT1_URL = environ.get('SHORT1_URL', "ziplinker.net") # oneman
 SHORT1_API = environ.get('SHORT1_API', "603c7a037b8bf4d5a9d2eaa43df6b84783da7aa6")
 
-SHORT2_URL = environ.get('SHORT2_URL', "omnifly.in.net") # Second
-SHORT2_API = environ.get('SHORT2_API', "579a68527328d450fea22397f9b8890c2e198cab")
+SHORT2_URL = environ.get('SHORT2_URL', "Vipurl.in") # Second
+SHORT2_API = environ.get('SHORT2_API', "dab3cb1c6b806d8ac96c0635793f12ad87cce803")
 
 SHORT3_URL = environ.get('SHORT3_URL', "ziplinker.net") # Fourth 
 SHORT3_API = environ.get('SHORT3_API', "0d2e001687e2a100f98cb027866a13d5214bd6c0")
 
-SHORT4_URL = environ.get('SHORT4_URL', "omnifly.in.net") # Fifth
-SHORT4_API = environ.get('SHORT4_API', "4294eebd727e09d894b8870419f9dd4112fb6fec")
+SHORT4_URL = environ.get('SHORT4_URL', "Vipurl.in") # Fifth
+SHORT4_API = environ.get('SHORT4_API', "5f937a72676575733f57dfa6b0c0f1aa5c7c87f6")
 
 # Verification 2
-VERIFY1_URL = environ.get('VERIFY1_URL', "omnifly.in.net") # Frist
-VERIFY1_API = environ.get('VERIFY1_API', "2f07494c29d95eacffbc5d6998bc56c91b8ee47d")
+VERIFY1_URL = environ.get('VERIFY1_URL', "Vipurl.in") # Frist
+VERIFY1_API = environ.get('VERIFY1_API', "ba4c12b96125e2cc04402e2a9125a8559f27b3fc")
 
 VERIFY2_URL = environ.get('VERIFY2_URL', "ziplinker.net") # Adventure 
 VERIFY2_API = environ.get('VERIFY2_API', "12f1784cd5831936c8e4c6f5e414a2f31a22eb2f")
 
-VERIFY3_URL = environ.get('VERIFY3_URL', "omnifly.in.net") # Fourth 
-VERIFY3_API = environ.get('VERIFY3_API', "df8b5a6b74fda240a993dc4c4fdd07d8763914b9")
+VERIFY3_URL = environ.get('VERIFY3_URL', "Vipurl.in") # Fourth 
+VERIFY3_API = environ.get('VERIFY3_API', "dd5d35a0b20b23842e527a390e09601e56e6f2e4")
 
 VERIFY4_URL = environ.get('VERIFY4_URL', "ziplinker.net") # Fifth
 VERIFY4_API = environ.get('VERIFY4_API', "f96c0aa1dadc48971de09d64d3909d3cc331326a")
