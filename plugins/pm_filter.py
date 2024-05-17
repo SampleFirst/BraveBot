@@ -153,16 +153,7 @@ async def next_page(bot, query):
     else:
         await save_group_settings(query.message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
-    if IS_VERIFY and not await check_verification(bot, query.from_user.id):
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{query.from_user.id}-{file.file_id}"
-                ),
-            ]
-            for file in files
-        ]
-    elif ENABLE_SHORTLINK and settings['button']:
+    if ENABLE_SHORTLINK and settings['button']:
         btn = [
             [
                 InlineKeyboardButton(
@@ -333,16 +324,7 @@ async def language_check(bot, query):
             await save_group_settings(query.message.chat.id, 'is_shortlink', False)
             ENABLE_SHORTLINK = False
         pre = 'filep' if settings['file_secure'] else 'file'
-        if IS_VERIFY and not await check_verification(bot, userid):
-            btn = [
-                [
-                    InlineKeyboardButton(
-                        text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{userid}-{file.file_id}"
-                    ),
-                ]
-                for file in files
-            ]
-        elif ENABLE_SHORTLINK and settings['button']:
+        if ENABLE_SHORTLINK and settings['button']:
             btn = [
                 [
                     InlineKeyboardButton(
@@ -1732,16 +1714,7 @@ async def auto_filter(client, msg, spoll=False):
         await save_group_settings(message.chat.id, 'is_shortlink', False)
         ENABLE_SHORTLINK = False
     pre = 'filep' if settings['file_secure'] else 'file'
-    if IS_VERIFY and not await check_verification(client, msg.from_user.id):
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] {file.file_name}", url=f"https://telegram.me/{temp.U_NAME}?start=version-{msg.from_user.id}-{file.file_id}"
-                ),
-            ]
-            for file in files
-        ]
-    elif ENABLE_SHORTLINK and settings["button"]:
+    if ENABLE_SHORTLINK and settings["button"]:
         btn = [
             [
                 InlineKeyboardButton(
