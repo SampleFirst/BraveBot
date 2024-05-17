@@ -798,7 +798,7 @@ async def verify_user(bot, userid, token):
     tz = pytz.timezone('Asia/Kolkata')
     short_var = status["short"]
     shortnum = int(short_var)
-    if shortnum == 5:
+    if shortnum == 4:
         vrnum = 1
         date_var = datetime.now(tz)+timedelta(hours=24)
         temp_time = date_var.strftime("%H:%M:%S")
