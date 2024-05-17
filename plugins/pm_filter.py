@@ -753,7 +753,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             else:
                 if clicked == typed:
                     if IS_VERIFY and not await check_verification(client, query.from_user.id):
-                        abc = await client.send_message(
+                        msg = await client.send_message(
                             chat_id=query.from_user.id,
                             text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
                             protect_content=True if ident == 'checksubp' else False,
@@ -780,7 +780,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                                 ]
                             )
                         )
-                        temp.STORE_ID[query.from_user.id] = abc.id
+                        temp.STORE_ID[query.from_user.id] = msg.id
+                        print(msg.id)
                         return await query.answer("Hey, You have not verified today. You have to verify to continue. Check my PM to verify and get files!", show_alert=True)
                     else:
                         file_send = await client.send_cached_media(
@@ -870,7 +871,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             f_caption = f"{title}"
         await query.answer()
         if IS_VERIFY and not await check_verification(client, query.from_user.id):
-            abc = await client.send_message(
+            msg = await client.send_message(
                 chat_id=query.from_user.id,
                 text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 24 hours from now!</b>",
                 protect_content=True if ident == 'checksubp' else False,
@@ -897,7 +898,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     ]
                 )
             )
-            temp.STORE_ID[query.from_user.id] = abc.id
+            temp.STORE_ID[query.from_user.id] = msg.id
             return await query.answer("Hey, You have not verified today. You have to verify to continue. Check my PM to verify and get files!", show_alert=True)
         
         file_sendpm = await client.send_cached_media(
