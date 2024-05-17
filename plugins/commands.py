@@ -257,7 +257,7 @@ async def start(client, message):
                             InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                         ]
                     ]
-                    msg_id = temp.STORE_ID.get(user_id)
+                    msg_id = temp.STORE_ID.get(userid)
                     msg = await client.get_messages(message.chat.id, message_ids=msg_id)
                     await msg.edit_text(
                         text=f"<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until {shortnum} 5 hours from now!</b>",
