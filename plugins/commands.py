@@ -246,7 +246,7 @@ async def start(client, message):
             ]]
             msg = await client.send_message(
                 chat_id=userid,
-                text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
+                text=f"<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until {shortnum}5 hours from now!</b>",
                 disable_web_page_preview=True,
                 parse_mode=enums.ParseMode.HTML,
                 reply_markup=InlineKeyboardMarkup(btn)
@@ -279,11 +279,11 @@ async def start(client, message):
         is_valid = await check_token(client, userid, token)
         if is_valid:
             if IS_VERIFY and not await check_verification(client, userid):
+                await verify_user(client, userid, token)
                 status = await get_verify_status(userid)
                 short_var = status["short"]
                 shortnum = int(short_var)
                 if shortnum != 4:
-                    await verify_user(client, userid, token)
                     btn = [
                         [
                             InlineKeyboardButton(f"Verify - {shortnum}", url=await get_token(client, userid, f"https://telegram.me/{temp.U_NAME}?start=", fileid)),
@@ -293,7 +293,7 @@ async def start(client, message):
                     msg_id = temp.STORE_ID.get(userid)
                     msg = await client.get_messages(message.chat.id, msg_id)
                     await msg.edit_text(
-                        text="<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until 5 hours from now!</b>",
+                        text=f"<b>You are not verified!\nKindly verify to continue so that you can get access to unlimited movies until {shortnum} 5 hours from now!</b>",
                         disable_web_page_preview=True,
                         parse_mode=enums.ParseMode.HTML,
                         reply_markup=InlineKeyboardMarkup(btn)
